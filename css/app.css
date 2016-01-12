@@ -1,0 +1,463 @@
+/* app css stylesheet */
+
+body {
+  background-color: #eee;
+}
+
+.view-container {
+  background-color: #eee;
+  margin: 0em;
+  border-radius: 0px;
+}
+
+.view-container .view-frame {
+  background-color: #eee;
+}
+
+.row.top {
+  padding-top: 20px;
+  color: white;
+  background-color: #555;
+  border: none;
+}
+
+.well {
+  text-align: left;
+  height: auto;
+  background-color: #555;
+  border-radius: 0px;
+  border: medium none;
+  box-shadow: 0px 0px 3px -1px #000 inset;
+  color: white;
+-webkit-transition: all 1s;
+  transition: all 1s;
+}
+
+input[type="checkbox"] {
+  display:none;
+}
+
+input[type="checkbox"] {
+  display:none;
+}
+
+input[type="checkbox"] + label span {
+  display:inline-block;
+  vertical-align:middle;
+  color: #fff;
+}
+
+input[type="checkbox"] + label span:after {
+  content: '\f00d';
+}
+
+input[type="checkbox"]:checked + label span:after {
+  content: '\f021';
+}
+
+.attribute-listing td.nopadding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.requestinfo {
+  background-color: #555;
+  color: white;
+  padding: 0.3em;
+}
+
+.row.content {
+  //box-shadow: 0px -2px 2px 0px rgba(0, 0, 0, 0.3);
+  //margin: 1em;
+}
+
+.content-column {
+  padding: 0.5em;
+}
+
+.content-column .content {
+  background-color: white;
+  padding: 1em;
+  margin-bottom: 1em;
+  box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+}
+
+.identity {
+  list-style: none;
+}
+
+td.identity-thumb {
+  width: 5em;
+}
+
+.identity-thumb a {
+  color: white;
+}
+
+.identity-thumb input {
+  color: white;
+  border:none;
+  border-style:none;
+  font-size: 2em;
+}
+
+ul.identity {
+  padding-top: 5px;
+  width: 100%;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+/*.attribute .attribute-listing input {
+color: white;
+border:none;
+border-style:none;
+width: 100%;
+font-size: 2em;
+}*/
+
+div.token {
+  word-break: break-all;
+}
+
+tr.toprow {
+  background-color: #555;
+  color: white;
+}
+
+td.expander {
+  width: 1em;
+}
+
+input.expander[type=checkbox] {
+  display: none;
+}
+
+input.expander[type=checkbox] + label span {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+hr {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.attribute-listing td {
+  -webkit-transition: all 1s;
+  transition: all 1s;
+  padding: 1em;
+}
+
+.attribute-listing tr.spacer {
+  height: 0.2em;
+}
+
+.content tr.item:hover {
+  background-color: #eee;
+}
+
+li.attribute-listing {
+  clear: both;
+  padding: 4px;
+  margin: 5px;
+  border-radius: 0px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
+  box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
+}
+
+ul.attribute, table.attribute {
+  padding-top: 5px;
+  margin-top: 1em;
+  width: 100%;
+  padding-left: 20%;
+  padding-right: 20%;
+  list-style: none;
+}
+
+.divthumb {
+  font-size: 1em;
+  height: 100%;
+  padding: 0;
+}
+
+.divthumb div.icon {
+  height: 90%;
+  font-size: 5em;
+  color: white;
+}
+
+
+.divthumb div.alt {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+  font-size: 1em;
+  text-align: center;
+  background-color: #555;
+  width: 100%;
+  margin-top: 1px;
+  color: white;
+  padding: 3px;
+}
+
+/*.divthumb.active:hover input {
+height: 20%;
+font-size: 0.5em;
+}*/
+
+
+
+.divthumb.active:hover input.alt {
+  //height: 80%;
+  color: #fff;
+  //font-size: 2em;
+}
+.divcontent {
+  word-break: break-all;
+  padding: 0;
+  padding-left: 5px;
+}
+
+input.new_attribute {
+  border: 1px solid #eee;
+  border-radius: 0;
+  margin-bottom: 2em;
+  margin: 1px;
+  height: 2em;
+}
+
+input.new_attribute:focus {
+  border: 1px solid #555;
+}
+
+input.new_identity {
+  border: 1px solid #eee;
+  border-radius: 0;
+  margin-bottom: 2em;
+  margin: 1px;
+  height: 2em;
+}
+
+input.new_identity:focus {
+  border: 1px solid #555;
+}
+.thumb {
+  float: left;
+  //margin: -0.5em 1em 1.5em 0;
+  //padding-bottom: 1em;
+  text-align: center;
+  line-height: 1.2em;
+  width: 1.5em;
+}
+
+.identity li {
+  clear: both;
+  height: 115px;
+  padding: 4px;
+  margin: 5px;
+  border-radius: 0px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
+  box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
+}
+
+/** Detail View **/
+img.phone {
+  float: left;
+  margin-right: 3em;
+  margin-bottom: 2em;
+  background-color: white;
+  padding: 2em;
+  height: 400px;
+  width: 400px;
+  display: none;
+}
+
+img.phone:first-child {
+  display: block;
+}
+
+
+ul.phone-thumbs {
+  margin: 0;
+  list-style: none;
+}
+
+ul.phone-thumbs li {
+  border: 1px solid black;
+  display: inline-block;
+  margin: 1em;
+  background-color: white;
+}
+
+ul.phone-thumbs img {
+  height: 100px;
+  width: 100px;
+  padding: 1em;
+}
+
+ul.phone-thumbs img:hover {
+  cursor: pointer;
+}
+
+
+ul.specs {
+  clear: both;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.specs > li{
+  display: inline-block;
+  width: 200px;
+  vertical-align: top;
+}
+
+ul.specs > li > span{
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+ul.specs dt {
+  font-weight: bold;
+}
+
+h1 {
+  border-bottom: 1px solid gray;
+  margin-top: 0;
+}
+
+.top h1 {
+  border-bottom: 1px solid white;
+}
+
+.top img {
+  float: right;
+  position: absolute;
+  top: -15px;
+  right: 15px;
+}
+
+.tag, .button, .button:visited {
+  background: #222 url(overlay.png) repeat-x; 
+  display: inline-block; 
+  padding: 0.5em 1em 0.5em; 
+  color: #fff; 
+  text-decoration: none;
+  min-width: 2.5em;
+  text-align: center; 
+  border-radius: 1px;
+  -moz-border-radius: 38px; 
+  -webkit-border-radius: 38px;
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  //border-bottom: 1px solid rgba(0,0,0,0.25);
+  position: relative;
+  cursor: pointer;
+  margin: 1px;
+}
+
+.rounded {
+  border-radius: 1em;
+}
+
+.button:hover {
+  background-color: #111;
+  color: #fff;
+  text-decoration: none;
+}
+
+.button:active {
+  border-color: #fff;
+}
+
+select.button {
+  border: none;
+  padding:3px;
+  margin: 0;
+  border:none;
+  outline:none;
+  display: inline-block;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  cursor:pointer;
+  text-align: left;
+}
+
+label.selectbutton {
+  position: relative;
+}
+
+label.selectbutton:after {
+  content: '\f0d7';
+  right:8px; top:4px;
+  color:white;
+  padding-left: 3px;
+  border-left: 1px solid white;
+  position:absolute;
+  pointer-events:none;
+}
+
+.selectbutton option {
+  border:none;
+}
+
+label.selectbutton:before {
+  //content:'';
+  right:6px; top:0px;
+  width:20px; height:20px;
+  background:#f8f8f8;
+  position:absolute;
+  pointer-events:none;
+  display:block;
+}
+
+.small.tag, .small.button, .small.button:visited {
+  font-size: 11px;
+}
+.tag, .medium.tag, .button, .button:visited, .medium.button, .medium.button:visited                {
+  font-size: 13px; 
+  font-weight: bold; 
+  line-height: 1; 
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
+}
+
+.large.tag, .large.button, .large.button:visited                    { font-size: 14px; 
+padding: 8px 14px 9px; }
+
+.super.tag, .super.button, .super.button:visited                    { font-size: 34px; 
+padding: 8px 14px 9px; }
+
+.grey.tag, .grey.button, .magenta.button:visited           { background-color: #555; }
+.grey.button:hover {
+  background-color: #777;
+}
+
+.white.tag, .white.button, .white.button:visited                        { background-color: white; color: #555;}
+.white.button:hover                                                       { background-color: #555; color: white; }
+
+.pink.tag, .pink.button, .magenta.button:visited           { background-color: #e22092; }
+.pink.button:hover                                                      { background-color: #c81e82; }
+.green.tag, .green.button, .green.button:visited            { background-color: #91bd09; }
+.green.button:hover                                                 { background-color: #749a02; }
+.scarlett.tag, .scarlett.button, .scarlett.button:visited {
+  background-color: #960018;
+}
+.red.tag, .red.button, .red.button:visited                        { background-color:#cf2525; }
+.red.button:hover                                                       { background-color: #e62727; }
+
+.orange.tag, .orange.button, .orange.button:visited          { background-color: #ff5c00; }
+.orange.button:hover                                            { background-color: #d45500; }
+.blue.button, .blue.tag , .blue:visited                  { background-color: #00B2ED; }
+
+.blue, .blue.button:hover                                                      { background-color: #33C2F2; }
+.yellow.tag, .yellow.button, .yellow.button:visited          { background-color: #ffb515; }
+.yellow.button:hover                                            { background-color: #fc9200; }

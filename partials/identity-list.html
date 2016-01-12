@@ -1,0 +1,92 @@
+<div class="container-fluid">
+  <div class="row top">
+    <div class="col-md-12">
+    
+      <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
+        <img src="img/gnet.png" style="margin:2px; width:50px;"/>  
+        Identity Provider</h1>
+      <!--Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="name">Alphabetical</option>
+        <option value="age">Newest</option>
+      </select>-->
+    </div>
+  </div>
+  <div class="row requestinfo"
+    ng-show="selectIdentity"><b>{{selectIdentity}}</b> requests
+    an identity.</div>
+  <form novalidate="novalidate" class="form-horizontal">
+    <div class="row content">
+      <div class="col-md-4 content-column">
+        <div class="content">
+          <h2><i style="color:#555" class="fa fa-search"/> Filter: </h2>
+          <input type="text" ng-model="searchIdentities"
+          class="new_identity" placeholder="By identity name"/><span class="tag
+            grey fa
+            fa-search"/> 
+          </div>
+          <div class="content">
+            <h2><i style="color:#555" class="fa fa-user-plus"/> Create a new identity </h2>
+            <input type="text" ng-keypress="($event.which ===
+            13)?addIdentity():0"
+            class="new_identity" placeholder="Enter identity name"
+            ng-model="new_identity.data.name">
+            <a ng-click="addIdentity()" style="height:2em;"
+              class="button grey fa fa-plus"></a>
+          </div>
+
+        </div>
+
+        <div class="col-md-8 content-column">
+          <!--Body content-->
+          <div class="content">
+            <h2><i style="color:#555" class="fa fa-users"/> Available
+                Identities </h2>
+            <table class="attribute">
+              <tbody class="attribute-listing">
+              <tr class="item"  ng-repeat-start="identity in identities |
+                filter:searchIdentities | orderBy:'name'">
+                <td class="identity-thumb">
+                  <div class="divthumb {{selectIdentity ? 'active' : '';}}">
+                    <div
+                      style="background-color: {{intToRGB(identity.id)}};" 
+                      class="thumb icon" > {{identity.name[0]}} </div>
+                    <div 
+                      class="thumb fa alt">
+                      {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
+                      5,identity.id.length - 1)}}
+                    </div>
+                  </div>
+                </td>
+                <td class="identity-info">
+                  <h1>{{identity.name}}</h1>
+                  <!--Key:
+              {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
+              5,identity.id.length - 1)}}<br/>-->
+                  <a 
+                    ng-click="goToIdentity(identity)"
+                    ng-show="selectIdentity"
+                    class="button grey fa fa-sign-in"
+                    style="float:right;"></a>
+                  <a ng-click="removeIdentity(identity)"
+                    ng-show="!selectIdentity"
+                    style="float:right;"
+                    class="button orange fa fa-user-times"></a>
+                  <a href="#/identities/{{identity.id}}"
+                    ng-show="!selectIdentity"
+                    style="float:right;" class="button grey fa fa-edit"></a> 
+                </td>
+              </tr>
+              <tr ng-show="!$last" ng-repeat-end>
+                <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                  <hr ng-show="!$last">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
