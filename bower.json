@@ -1,6 +1,6 @@
 {
-  "name": "GNUnet WebUI",
-  "description": "WebUI",
+  "name": "gnunet-webui",
+  "description": "GNUnet WebUI",
   "version": "0.0.0",
   "homepage": "https://gnunet.org",
   "license": "GPLv3",
