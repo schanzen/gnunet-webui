@@ -19,6 +19,7 @@ body {
   color: white;
   background-color: #555;
   border: none;
+  box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .82);
 }
 
 .well {
@@ -29,7 +30,6 @@ body {
   border: medium none;
   box-shadow: 0px 0px 3px -1px #000 inset;
   color: white;
--webkit-transition: all 1s;
   transition: all 1s;
 }
 
@@ -145,7 +145,6 @@ hr {
 }
 
 .attribute-listing td {
-  -webkit-transition: all 1s;
   transition: all 1s;
   padding: 1em;
 }
@@ -164,8 +163,6 @@ li.attribute-listing {
   margin: 5px;
   border-radius: 0px;
   border: 1px solid #bbb;
-  -webkit-box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
   box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.5);
 }
 
@@ -261,8 +258,6 @@ input.new_identity:focus {
   margin: 5px;
   border-radius: 0px;
   border: 1px solid #bbb;
-  -webkit-box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
   box-shadow: 0px 0px 2px -1px rgba(0,0,0,0.5);
 }
 
@@ -353,10 +348,6 @@ h1 {
   min-width: 2.5em;
   text-align: center; 
   border-radius: 1px;
-  -moz-border-radius: 38px; 
-  -webkit-border-radius: 38px;
-  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
   text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
   //border-bottom: 1px solid rgba(0,0,0,0.25);
   position: relative;
@@ -385,8 +376,6 @@ select.button {
   border:none;
   outline:none;
   display: inline-block;
-  -webkit-appearance:none;
-  -moz-appearance:none;
   appearance:none;
   cursor:pointer;
   text-align: left;

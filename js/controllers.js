@@ -48,7 +48,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                      }
                                      ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
                                        if (data.data.length === 1) {
-                                         $scope.selectIdentity = data.data[0].name;
+                                         $scope.selectIdentity = data.data[0].attributes.name;
                                        }
                                      });
                                    }
@@ -58,7 +58,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    Identity.save($scope.new_identity).$promise.then (function(result) {
                                      Identity.query(function(data) {
                                        $scope.identities = data.data;
-                                       $scope.new_identity.data.name = "";
+                                       $scope.new_identity.data.attributes.attributes.name = "";
                                      });
                                    });
                                  };
@@ -76,8 +76,8 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
 
                                  Identity.get({identityId: $routeParams.identityId}, function (data) {}).$promise.then (function (result) {
-                                   $scope.identity = result.data[0];
-                                   $scope.identityName = $scope.identity.name;
+                                   $scope.identity = result.data;
+                                   $scope.identityName = $scope.identity.attributes.name;
                                    $scope.isCollapsed = 'false';
                                    $scope.attrs = [];
                                    $scope.missingAttrs = [];
@@ -98,12 +98,14 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      (localStorage.getItem ('default_identities')!==null) ?
                                      JSON.parse ($scope.saved) : [];
                                    localStorage.setItem ('default_identities', JSON.stringify ($scope.audiences));
-
-                                   ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
-                                     if (data.data.length === 1) {
-                                       $scope.selectIdentity = data.data[0].name;
-                                     }
-                                   });
+                                   
+                                   if (undefined != $scope.client_id) {
+                                     ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
+                                       if (data.data.length === 1) {
+                                         $scope.selectIdentity = data.data[0].attributes.name;
+                                       }
+                                     });
+                                   }
 
                                    for (var i = 0; i < $scope.requestedInfos.length; i++) {
                                      $scope.req_attribute_values[$scope.requestedInfos[i]] = [];
@@ -121,25 +123,23 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        }
                                      }
                                    }
-                                   $scope.attributes = Attributes.get({identityName: $scope.identity.name}, function(attributes) {
+                                   $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                      $scope.updateAttrs(attributes);
                                    });
                                    $scope.audRealNames = {};
-                                   $scope.grants = Grants.get({identityName: $scope.identity.name}).$promise.then (function(attributes) {
+                                   $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}).$promise.then (function(attributes) {
                                      //Get real names for audiences
                                      for (var i = 0; i < attributes.data.length; i++) {
                                        var aud = $scope.getSubjectForGrant(attributes.data[i]);
                                        ReverseNames.query({zkey:aud}).$promise.then (function(data) {
                                          $scope.audRealNames[aud] = aud;
-                                         if (data.data.length === 1) {
-                                           $scope.audRealNames[data.data[0].id] = data.data[0].name;
-                                         }
+                                         $scope.audRealNames[data.data.id] = data.data.attributes.name;
                                        });
                                      }
                                      $scope.grants = attributes;
                                    });
                                    $scope.getSubjectForGrant = function(grant) {
-                                     return grant.record[0].value.split(";")[1];
+                                     return grant.attributes.record[0].value.split(";")[1];
                                      //return JSON.parse(atob(grant.record[0].value.split(".")[1])).aud;
                                    };
                                    $scope.getRealNameForAud = function (grant) {
@@ -170,8 +170,8 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      }
 
 
-                                     Attributes.save({identityName: $scope.identity.name}, $scope.new_attribute).$promise.then (function(result) {
-                                       $scope.attributes = Attributes.get({identityName: $scope.identity.name}, function(attributes) {
+                                     Attributes.save({identityName: $scope.identity.attributes.name}, $scope.new_attribute).$promise.then (function(result) {
+                                       $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                          $scope.updateAttrs(attributes);
                                          $scope.new_attribute.data.record = [];
                                          $scope.new_attribute.data.id = "";
@@ -196,8 +196,8 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        new_attribute.data.record.push(rec);
                                      }
 
-                                     Attributes.save({identityName: $scope.identity.name}, new_attribute).$promise.then (function(result) {
-                                       $scope.attributes = Attributes.get({identityName: $scope.identity.name}, function(attributes) {
+                                     Attributes.save({identityName: $scope.identity.attributes.name}, new_attribute).$promise.then (function(result) {
+                                       $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                          $scope.updateAttrs(attributes);
                                        });
 
@@ -206,7 +206,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
 
                                    $scope.removeAttribute = function(attr) {
                                      Attributes.remove({ identityName: $scope.identity.name, attrName: attr.id}).$promise.then (function(result) {
-                                       $scope.attributes = Attributes.get({identityName: $scope.identity.name}, function(attributes) {
+                                       $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                          $scope.updateAttrs(attributes);
                                          $scope.new_attribute.data.record = [];
                                          $scope.new_attribute.data.id = "";
@@ -238,7 +238,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      return (new Date(unixtime / 1000)).yyyymmdd();
                                    };
                                    $scope.isExpired = function (grant) {
-                                     return ("true" === grant.record[0].expired);
+                                     return ("true" === grant.attributes.record[0].expired);
                                    }
                                    $scope.getAttrsInGrant = function (grant) {
                                      /*var decoded = $scope.decodeGrantToken(grant);
@@ -247,12 +247,12 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        if (key !== "sub" && key !== "iat" && key !== "iss" && key !== "exp" && key !== "nbf" && key !== "aud" && key !== "rnl")
                                        ret.push(key);
                                        }*/
-                                     return grant.record[0].value.split(";")[2].split(",");
+                                     return grant.attributes.record[0].value.split(";")[2].split(",");
                                    }
                                    $scope.removeGrant = function(grant) {
                                      var dec_token = $scope.decodeGrantToken(grant);
-                                     Grants.remove({ identityName: $scope.identity.name, recordName: grant.id }).$promise.then (function(result) {
-                                       $scope.grants = Grants.get({identityName: $scope.identity.name}, function(attributes) {});
+                                     Grants.remove({ identityName: $scope.identity.attributes.name, recordName: grant.id }).$promise.then (function(result) {
+                                       $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}, function(attributes) {});
 
                                      });
                                    };
@@ -293,7 +293,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      for (i = 0; i < $scope.audiences.length; i++)
                                      {
                                        if ($scope.audiences[0].aud === $scope.client_id &&
-                                           $scope.audiences[0].iss === $scope.identity.name)
+                                           $scope.audiences[0].iss === $scope.identity.attributes.name)
                                        {
                                          return true;
                                        }
@@ -304,7 +304,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      var saved = localStorage.getItem ('default_identities');
                                      $scope.audiences.push({
                                        aud: $scope.client_id,
-                                       iss: $scope.identity.name
+                                       iss: $scope.identity.attributes.name
                                      });
                                      localStorage.setItem('default_identities', JSON.stringify($scope.audiences));
                                    };

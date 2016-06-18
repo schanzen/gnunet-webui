@@ -51,7 +51,8 @@
                   <div class="divthumb {{selectIdentity ? 'active' : '';}}">
                     <div
                       style="background-color: {{intToRGB(identity.id)}};" 
-                      class="thumb icon" > {{identity.name[0]}} </div>
+                      class="thumb icon" >
+                      {{identity.attributes.name[0]}} </div>
                     <div 
                       class="thumb fa alt">
                       {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
@@ -60,7 +61,7 @@
                   </div>
                 </td>
                 <td class="identity-info">
-                  <h1>{{identity.name}}</h1>
+                  <h1>{{identity.attributes.name}}</h1>
                   <!--Key:
               {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
               5,identity.id.length - 1)}}<br/>-->
