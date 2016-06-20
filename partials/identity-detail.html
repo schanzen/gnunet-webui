@@ -31,7 +31,7 @@
               </thead>
               <tbody
               class="attribute-listing">
-              <tr ng-repeat-start="attr in attributes.data" class="item">
+              <tr ng-repeat-start="attr in getAttrs()" class="item">
                 <td class="attr-name" style="{{attrs.indexOf(attr.id) == -1 ?
                   'color: #ddd;' : '';}}"><b>{{attr.id}}</b> <i
                     ng-show="{{requestedInfos.indexOf(attr.id) != -1}}"

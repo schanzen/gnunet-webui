@@ -112,9 +112,13 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    }
                                    $scope.updateAttrs = function (attributes) {
                                      $scope.attrs = [];
-                                     for (var i = 0; i < attributes.data.length; i++)
-                                     {
-                                       $scope.attrs.push(attributes.data[i].id);
+                                     if (attributes.data instanceof Array) {
+                                       for (var i = 0; i < attributes.data.length; i++)
+                                       {
+                                         $scope.attrs.push(attributes.data[i].id);
+                                       }
+                                     } else {
+                                       $scope.attrs.push(attributes.data.id);
                                      }
                                      $scope.missingAttrs = [];
                                      for (var i = 0; i < $scope.requestedInfos.length; i++) {
@@ -126,9 +130,23 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                      $scope.updateAttrs(attributes);
                                    });
+                                   $scope.getAttrs = function () {
+                                     if (undefined == $scope.attributes.data) {
+                                       return [];
+                                     }
+                                     if ($scope.attributes.data instanceof Array) {
+                                       return $scope.attributes.data;
+                                     } else {
+                                       return [$scope.attributes.data];
+                                     }
+                                   }
                                    $scope.audRealNames = {};
                                    $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}).$promise.then (function(attributes) {
                                      //Get real names for audiences
+                                     if (null == attributes.data)
+                                     {
+                                       return;
+                                     }
                                      for (var i = 0; i < attributes.data.length; i++) {
                                        var aud = $scope.getSubjectForGrant(attributes.data[i]);
                                        ReverseNames.query({zkey:aud}).$promise.then (function(data) {
@@ -158,7 +176,8 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.new_attribute = new Attributes();
                                    $scope.new_attribute.data = new Object();
                                    $scope.new_attribute.data.type = "record";
-                                   $scope.new_attribute.data.record = [];
+                                   $scope.new_attribute.data.attributes = new Object();
+                                   $scope.new_attribute.data.attributes.record = [];
                                    $scope.addAttribute = function() {
                                      var attrs_to_save = $scope.new_attribute_values.split(",");
                                      for (var i = 0; i<attrs_to_save.length; i++) {
@@ -166,7 +185,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        rec["expiration"] = "never";
                                        rec["record_type"] = "ID_ATTR";
                                        rec["value"] = attrs_to_save[i];
-                                       $scope.new_attribute.data.record.push(rec);
+                                       $scope.new_attribute.data.attributes.record.push(rec);
                                      }
 
 
@@ -205,7 +224,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    };
 
                                    $scope.removeAttribute = function(attr) {
-                                     Attributes.remove({ identityName: $scope.identity.name, attrName: attr.id}).$promise.then (function(result) {
+                                     Attributes.remove({ identityName: $scope.identity.attributes.name, attrName: attr.id}).$promise.then (function(result) {
                                        $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                          $scope.updateAttrs(attributes);
                                          $scope.new_attribute.data.record = [];
