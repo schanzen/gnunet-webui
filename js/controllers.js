@@ -76,7 +76,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
 
                                  Identity.get({identityId: $routeParams.identityId}, function (data) {}).$promise.then (function (result) {
-                                   $scope.identity = result.data;
+                                   $scope.identity = result.data[0];
                                    $scope.identityName = $scope.identity.attributes.name;
                                    $scope.isCollapsed = 'false';
                                    $scope.attrs = [];
@@ -336,10 +336,10 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      IdTokenIssuer.issue ({issuer: $scope.identityName, audience: requestor, attributes: $scope.attrs, expiration: exp, nonce: $scope.nonce}).$promise.then (function (tokenData) {
                                        if ('ticket' === $scope.issue_type) {
                                          $window.location.href = $scope.redirect_uri
-                                           +"?ticket="+tokenData.data[0].ticket
+                                           +"?ticket="+tokenData.data[0].attributes.ticket
                                        } else if ('direct' === $scope.issue_type) {
                                          $window.location.href = $scope.redirect_uri +
-                                           "#token="+encodeURIComponent(tokenData.data[0].token)
+                                           "#token="+encodeURIComponent(tokenData.data[0].attributes.token)
                                        }
                                      });
                                    }
