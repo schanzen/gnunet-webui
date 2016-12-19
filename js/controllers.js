@@ -14,8 +14,10 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
                                  $scope.new_identity = new Identity();
                                  $scope.new_identity.data = new Object();
+                                 $scope.new_identity.data.id = "";
+                                 $scope.new_identity.data.attributes = new Object();
                                  $scope.new_identity.data.type = "ego";
-                                 $scope.new_identity.data.name = "";
+                                 $scope.new_identity.data.attributes.name = "";
                                  $scope.id_request = $location.search().r;
                                  if (undefined !== $scope.id_request)
                                  {
@@ -58,7 +60,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    Identity.save($scope.new_identity).$promise.then (function(result) {
                                      Identity.query(function(data) {
                                        $scope.identities = data.data;
-                                       $scope.new_identity.data.attributes.attributes.name = "";
+                                       $scope.new_identity.data.attributes.name = "";
                                      });
                                    });
                                  };
@@ -175,6 +177,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
 
                                    $scope.new_attribute = new Attributes();
                                    $scope.new_attribute.data = new Object();
+                                   $scope.new_attribute.data.id = "";
                                    $scope.new_attribute.data.type = "record";
                                    $scope.new_attribute.data.attributes = new Object();
                                    $scope.new_attribute.data.attributes.record = [];
