@@ -59,6 +59,19 @@
                     <hr >
                   </td>
                 </tr>
+                <tr ng-repeat-start="v_attr in getVerifiedAttrs()" class="item">
+                  <td class="attr-name">
+                    <b>{{v_attr}}</b> <i style="color: #ff5c00;">(verfied)</i>
+                  </td>
+                  <td>
+                    <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i> Collecting appropriate credentials...
+                  </td>
+                </tr>
+                <tr ng-repeat-end>
+                  <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                    <hr >
+                  </td>
+                </tr>
                 <tr ng-show="requestedAttributeMissing()" ng-repeat-start="requestedAttr in missingAttrs">
                   <td>
                     <b>{{requestedAttr}}</b> <i
@@ -128,80 +141,119 @@
                   </div>
                 </div>
               </div>
+              
+              <div class="content">
+                <!--Body content-->
+                <h2><i style="color:#555" class="fa fa-drivers-license"/> Credentials</h2>
+                <table class="attribute">
+                  <thead>
+                    <td>Name</td>
+                    <td>Attribute</td>
+                    <td>Issuer</td>
+                    <td>Expiration</td>
+                  </thead>
+                  <tbody
+                       class="attribute-listing">
+                    <tr ng-repeat-start="cred in getCreds()" class="item">
+                      <td class="attr-name"><b>{{cred.id}}</b> 
+                      </td>
+                      <td>
+                        {{getAttributeName(cred)}}
+                      </td>
+                      <td>
+                        {{getIssuer(cred)}}
+                      </td>
+                      <td>
+                        {{getCredExpiration(cred)}}
+                      </td>
+                      <td style="text-align:right;">
+                          <a ng-click="removeCredential(cred)" style="height:2em;
+                          width:3em;"
+                                                              class="button orange fa fa-trash"></a>
+                      </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                        <hr >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               <div class="content">
                 <h2 ><i style="color:#555" class="fa fa-chain"/> Identity
                     Tokens</h2>
-                  <table class="attribute">
-                    <thead style="text-align: center;">
-                      <td>
-                        Audience
-                      </td>
-                      <td>
-                        Expired
-                      </td>
-                      <td>
-                        Attributes
-                      </td>
-                      <td>
-                        Actions
-                      </td>
-                    </thead>
-                    <tbody style="text-align:
-                    center;"
-                    class="attribute-listing">
+                <table class="attribute">
+                  <thead style="text-align: center;">
+                    <td>
+                      Audience
+                    </td>
+                    <td>
+                      Expired
+                    </td>
+                    <td>
+                      Attributes
+                    </td>
+                    <td>
+                      Actions
+                    </td>
+                  </thead>
+                  <tbody style="text-align:
+                  center;"
+                         class="attribute-listing">
                     <tr ng-repeat-start="grant in grants.data" class="item">
                       <td class="attr-name"><a
                           href="{{getSubjectForGrant(grant)}}">{{getRealNameForAud(grant)}}</a></td>
                       <td>
                         <b ng-show="isExpired(grant)" class="tag small 
-                          red fa fa-calendar-times-o"></b>
+                        red fa fa-calendar-times-o"></b>
                       </td>
                       <td>
                         <i ng-repeat="attr in
-                          getAttrsInGrant(grant)" class="button small grey">{{attr}}</i>
+                        getAttrsInGrant(grant)" class="button small grey">{{attr}}</i>
                       </td>
                       <td style="text-align:right;">
 
                         <a type="button" class="button grey fa fa-info-circle"
-                          ng-click="isCollapsed = !isCollapsed"/>
+                                         ng-click="isCollapsed = !isCollapsed"/>
                           <a class="button orange fa fa-unlink"
-                            ng-click="removeGrant(grant)"/>
+                             ng-click="removeGrant(grant)"/>
 
-                          </td>
-                        </tr>
-                        <tr ng-repeat-end>
-                          <td colspan="5"  style="padding-top: 0; padding-bottom:
-                            0;" >
-                            <div style="word-break: break-all;" >
-                              <div class="well
-                                well-lg" style="text-align: left;"
-                                collapse="isCollapsed">
-                                <b>{{isExpired(grant) ? '!!!EXPIRED!!!' : ''}}</b><br
-                                ng-show="isExpired(grant)"/>
-                                Issued At:<br/><b>
-                                  {{toDate(decodeGrantToken(grant).iat)}}</b><br/>
-                                Valid From:<br/>
-                                <b>{{toDate(decodeGrantToken(grant).nbf)}}</b><br/>
-                                Valid Until:<br/>
-                                <b>{{toDate(decodeGrantToken(grant).exp)}}</b><br/>
-                                Label:<br/> <b>{{grant.id}}</b><br/>
-                                Token:<br/> <b>{{grant.record[0].value}}</b><br/>
-                              </div>
-                              <hr ng-show="!$last">
-                            </div>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
+                      </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td colspan="5"  style="padding-top: 0; padding-bottom:
+                      0;" >
+                      <div style="word-break: break-all;" >
+                        <div class="well
+                        well-lg" style="text-align: left;"
+                                 collapse="isCollapsed">
+                          <b>{{isExpired(grant) ? '!!!EXPIRED!!!' : ''}}</b><br
+                                 ng-show="isExpired(grant)"/>
+                          Issued At:<br/><b>
+                        {{toDate(decodeGrantToken(grant).iat)}}</b><br/>
+                      Valid From:<br/>
+                      <b>{{toDate(decodeGrantToken(grant).nbf)}}</b><br/>
+                      Valid Until:<br/>
+                      <b>{{toDate(decodeGrantToken(grant).exp)}}</b><br/>
+                      Label:<br/> <b>{{grant.id}}</b><br/>
+                      Token:<br/> <b>{{grant.record[0].value}}</b><br/>
+                        </div>
+                        <hr ng-show="!$last">
+                      </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
 
-                    </div>
-                  </div>
-                </div>
-                <hr>
-                <a type="button" class="button grey fa fa-arrow-left"
-                  href="/index.html#/identities/"><b> Back to
-                    Identities</b></a><br/><br/>
-              </form>
-            </div>
+              </div>
+      </div>
+    </div>
+    <hr>
+    <a type="button" class="button grey fa fa-arrow-left"
+                     href="/index.html#/identities/"><b> Back to
+                       Identities</b></a><br/><br/>
+  </form>
+</div>

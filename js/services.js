@@ -19,6 +19,14 @@ identityServices.factory('Attributes', ['$resource',
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
+identityServices.factory('Credentials', ['$resource',
+  function($resource){
+    return $resource('http://localhost:7776/names/:attrName?ego=:identityName&record_type=CRED', {}, {
+      query: {method:'GET', params:{}, isArray:false},
+      remove: {method:'DELETE', params:{}, isArray:false}
+    });
+  }]);
+
 identityServices.factory('ReverseNames', ['$resource',
   function($resource){
     return $resource('http://localhost:7776/names/zkey?zkey=:zkey', {}, {
@@ -27,7 +35,7 @@ identityServices.factory('ReverseNames', ['$resource',
   }]);
 identityServices.factory('IdTokenIssuer', ['$resource',
   function($resource){
-    return $resource('http://localhost:7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce', {}, {
+    return $resource('http://localhost:7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
       issue: {method:'GET', params:{}, isArray:false},
     });
   }]);
