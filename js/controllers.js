@@ -53,10 +53,11 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                          $scope.selectIdentity = data.data[0].attributes.name;
                                        }
                                      });
+
+
                                    }
                                  }
                                  $scope.addIdentity = function() {
-
                                    Identity.save($scope.new_identity).$promise.then (function(result) {
                                      Identity.query(function(data) {
                                        $scope.identities = data.data;
@@ -72,11 +73,13 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    });
                                  };
                                }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames',
-                               function($scope, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'CredentialIssuer', 'CredentialVerifier',
+                               function($scope, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, CredentialIssuer, CredentialVerifier) {
                                  $scope.selectedRelExpiration = "1d";
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
-
+                                 Identity.query(function(data) {
+                                   $scope.identities = data.data;
+                                 });
                                  Identity.get({identityId: $routeParams.identityId}, function (data) {}).$promise.then (function (result) {
                                    $scope.identity = result.data[0];
                                    $scope.identityName = $scope.identity.attributes.name;
@@ -191,7 +194,6 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        $scope.new_attribute.data.attributes.record.push(rec);
                                      }
 
-
                                      Attributes.save({identityName: $scope.identity.attributes.name}, $scope.new_attribute).$promise.then (function(result) {
                                        $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                          $scope.updateAttrs(attributes);
@@ -203,6 +205,31 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
 
                                      });
                                    };
+                                 
+                                  $scope.subject = [];
+                                  $scope.IssueCredential = function(attribute) {
+                                    var subject_key = $scope.subject;
+                                    var exp = $scope.selectedRelExpiration;
+                                    var attribute = $scope.subject_attribute_value;
+                                    CredentialIssuer.issue ({attribute: attribute, subject_key: subject_key, expiration: exp}).$promise.then (function (data) {
+                                      $scope.issueResponse = JSON.stringify(data);
+                                    });
+                                  }
+
+                                  $scope.VerifyCredential = function(issuerAttr, subjectCred) {
+                                    var issuer_attr = issuerAttr;
+                                    var subject_cred = subjectCred;
+                                    var issuer_ID = $scope.issuerID;
+                                    var subject_ID = $scope.subjectID;
+                                    var attribute = issuer_ID + "." + issuer_attr; 
+                                    var credential = subject_ID + "." + subject_cred;
+                                    attribute.replace(/\s+/g, '');
+                                    credential.replace(/\s+/g, '');
+                                    CredentialVerifier.verify ({attribute: attribute, credential: credential}).$promise.then (function (data) {
+                                      $scope.verifyResponse = JSON.stringify(data);
+                                    });
+                                  }
+
                                    $scope.addRequestedAttribute = function(requestedAttribute) {
                                      var new_attribute = new Attributes();
                                      new_attribute.data = new Object();
