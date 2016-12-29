@@ -18,6 +18,32 @@
         </ul>
       </div>
 
+      <div class="content">
+        <h2><i style="color:#555" class="fa fa-chain"/> List of Credentials</h2>
+        <tr>
+          <td>
+            <select>
+              <option>
+                {{issuedCredentials}}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input type="text" class="new_verification"
+              placeholder="Credential Name"
+            ng-model="credential_Name">
+          </td>
+          <td style="text-align:right;">
+            <a ng-click="SaveCredential(credential_Name)" style="height:2em;"
+            class="button grey">Save as</a>
+          </td>
+          <td>
+            <input type="text"  ng-model="savedCredential" 
+            style="float:right;" placeholder="">
+          </td>
+        </tr>
+    </div>
+
       <form novalidate="novalidate" class="form-horizontal">
         <div class="row content">
           <div class="col-md-12 content-column">
@@ -194,84 +220,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div class="content">
-        <h2><i style="color:#555" class="fa fa-chain"/> Issue Credential</h2>
-        <tr>
-          <td>
-            <select ng-model="subject">
-              <option ng-repeat="identity in identities">
-                {{identity.id}}
-              </option>
-            </select>
-          </td>
-          <td>
-            <input type="text" class="new_verification"
-              placeholder="Attribute"
-            ng-model="subject_attribute_value">
-          </td>
-          <td>
-            <label class="selectbutton fa">
-              <select
-                class="button grey"
-                style="min-width: 12em;"
-                name="relSelect"
-                ng-model="selectedRelExpiration">
-                <option value="5m">5 Minutes</option>
-                <option value="1h">1 Hour</option>
-                <option value="1d">1 Day</option>
-                <option value="7d">1 Week</option>
-              </select>
-            </label>
-          </td>
-          <td style="text-align:right;">
-            <a ng-click="IssueCredential(subject_attribute_value)" style="height:2em;"
-            class="button grey">Issue</a>
-          </td>
-          <td>
-            <input type="text" class="verification_result" ng-model="issueResponse" 
-            style="float:right;" placeholder="Issue Response">
-          </td>
-        </tr>
-      </div>
-
-      <div class="content">
-        <h2><i style="color:#555" class="fa fa-chain"/> Verify Credential</h2>
-        <tr>
-          <td>
-            <h4>Select the issuer</h4>
-            <select ng-model="issuerID">
-              <option ng-repeat="identity in identities">{{identity.id}}</option>
-            </select>
-          </td>
-          <td>
-            <h4>Select issuer's attribute</h4>
-            <input type="text" placeholder="Attribute" ng-model="issuer_attribute_value">
-          </td>
-          <td>
-            <h4>Select the subject</h4>
-            <select ng-model="subjectID">
-              <option ng-repeat="identity in identities">{{identity.id}}</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <h4>Select subject's credential</h4>
-            <input type="text" placeholder="Credential" ng-model="subject_credentail_value">
-          </td>
-          <td style="text-align:right;">
-            <a ng-click="VerifyCredential(issuer_attribute_value,subject_credentail_value)" style="height:2em;"
-            class="button grey">Verify</a>
-          </td>
-          <td>
-            <input type="text" class="verification_result" ng-model="verifyResponse" 
-            style="float:right;" placeholder="Verfiy Response">
-          </td>
-
-
-        </tr>
       </div>
 </div>
 </div>

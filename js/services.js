@@ -12,20 +12,29 @@ identityServices.factory('Identity', ['$resource',
     });
   }]);
 
-//"127.0.0.1/credential/issue?attribute=test&subject_key=A0XSAYRCJ0RVMXJD3KH3ZZSH7V6QJVXJ09MPQA1Q3ZCHDMDPKKM0&expiration=1d"
-identityServices.factory('CredentialIssuer', ['$resource',
+identityServices.factory('queryCredentialList', ['$resource',
   function($resource){
-    return $resource('http://localhost:7776/credential/issue?attribute=:attribute&subject_key=:subject_key&expiration=:expiration', {}, {
-      issue: {method:'GET', params:{}, isArray:false},
-    });
+    var service = {
+
+        credential_list: {
+            issuedCredentials: ''
+        },
+
+        SaveState: function () {
+            sessionStorage.queryCredentialList = angular.toJson(service.credential_list);
+        },
+
+        RestoreState: function () {
+            service.credential_list = angular.fromJson(sessionStorage.queryCredentialList);
+        }
+    }
+
+    $resource.bind("savestate", service.SaveState);
+    $resource.bind("restorestate", service.RestoreState);
+
+    return service;
 }]);
-//"127.0.0.1:7776/credential/verify?attribute=MMF1Q36DF0MB6RVT05BNQTYFMS2A8T9R0P5Q2203AZTAQ4X199Q0.user&credential=H1Z20XQ56DYDR6R9QM5J8DHF1MMMZ6G9HMM7CW73ZMTCCSFB24E0.mygnunetcreds"
-identityServices.factory('CredentialVerifier', ['$resource',
-  function($resource){
-    return $resource('http://localhost:7776/credential/verfiy?attribute=:attribute&credential=:credential', {}, {
-      verify: {method:'GET', params:{}, isArray:false},
-    });
-}]);
+
 
 identityServices.factory('Attributes', ['$resource',
   function($resource){

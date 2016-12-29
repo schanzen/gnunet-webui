@@ -37,6 +37,8 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                        $scope.issue_type = keyval[1];
                                      } else if ("nonce" === keyval[0]) {
                                        $scope.nonce = keyval[1];
+                                     } else if ("credential" === keyval[0]) {
+                                       $scope.credential = keyval[1];
                                      }
                                      $scope.goToIdentity = function (identity) {
                                        $window.location.href = "/index.html#/identities/"
@@ -73,8 +75,8 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    });
                                  };
                                }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'CredentialIssuer', 'CredentialVerifier',
-                               function($scope, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, CredentialIssuer, CredentialVerifier) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'queryCredentialList',
+                               function($scope, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, queryCredentialList) {
                                  $scope.selectedRelExpiration = "1d";
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
                                  Identity.query(function(data) {
@@ -97,6 +99,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.redirect_uri = decodeURIComponent($location.search().redirect_uri);
                                    $scope.issue_type = $location.search().issue_type;
                                    $scope.selectIdentity = $scope.client_id;
+                                   $scope.issuedCredentials = $location.search().credential;
 
                                    $scope.saved = localStorage.getItem ('default_identities');
                                    $scope.audiences = 
@@ -206,28 +209,15 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      });
                                    };
                                  
-                                  $scope.subject = [];
-                                  $scope.IssueCredential = function(attribute) {
-                                    var subject_key = $scope.subject;
-                                    var exp = $scope.selectedRelExpiration;
-                                    var attribute = $scope.subject_attribute_value;
-                                    CredentialIssuer.issue ({attribute: attribute, subject_key: subject_key, expiration: exp}).$promise.then (function (data) {
-                                      $scope.issueResponse = JSON.stringify(data);
-                                    });
+                                
+                                  $scope.displayCredentialList = function(){
+                                    console.log("*** Havij *** " + queryCredentialList);
+                                    $scope.credentialList = queryCredentialList;
                                   }
 
-                                  $scope.VerifyCredential = function(issuerAttr, subjectCred) {
-                                    var issuer_attr = issuerAttr;
-                                    var subject_cred = subjectCred;
-                                    var issuer_ID = $scope.issuerID;
-                                    var subject_ID = $scope.subjectID;
-                                    var attribute = issuer_ID + "." + issuer_attr; 
-                                    var credential = subject_ID + "." + subject_cred;
-                                    attribute.replace(/\s+/g, '');
-                                    credential.replace(/\s+/g, '');
-                                    CredentialVerifier.verify ({attribute: attribute, credential: credential}).$promise.then (function (data) {
-                                      $scope.verifyResponse = JSON.stringify(data);
-                                    });
+                                  $scope.SaveCredential = function(name){
+                                    $scope.savedCredential = name;
+
                                   }
 
                                    $scope.addRequestedAttribute = function(requestedAttribute) {
