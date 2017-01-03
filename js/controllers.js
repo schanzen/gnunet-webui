@@ -31,14 +31,14 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                        $scope.selectIdentity = keyval[1];
                                      } else if ("requested_attrs" === keyval[0]) {
                                        $scope.requested_attrs = keyval[1];
+                                     } else if ("requested_verified_attrs" === keyval[0]) {
+                                       $scope.requested_verified_attrs = keyval[1];
                                      } else if ("redirect_uri" === keyval[0]) {
                                        $scope.redirect_uri = keyval[1];
                                      } else if ("issue_type" === keyval[0]) {
                                        $scope.issue_type = keyval[1];
                                      } else if ("nonce" === keyval[0]) {
                                        $scope.nonce = keyval[1];
-                                     } else if ("credential" === keyval[0]) {
-                                       $scope.credential = keyval[1];
                                      }
                                      $scope.goToIdentity = function (identity) {
                                        $window.location.href = "/index.html#/identities/"
@@ -46,6 +46,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                          +"?redirect_uri="+$scope.redirect_uri
                                          +"&issue_type="+$scope.issue_type
                                          +"&requested_attrs="+$scope.requested_attrs
+                                         +"&requested_verified_attrs="+$scope.requested_verified_attrs
                                          +"&client_id="+$scope.client_id
                                          +"&nonce="+$scope.nonce;
                                        return;
@@ -55,11 +56,10 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                          $scope.selectIdentity = data.data[0].attributes.name;
                                        }
                                      });
-
-
-                                   }
+                                 }
                                  }
                                  $scope.addIdentity = function() {
+
                                    Identity.save($scope.new_identity).$promise.then (function(result) {
                                      Identity.query(function(data) {
                                        $scope.identities = data.data;
@@ -75,13 +75,13 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    });
                                  };
                                }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'queryCredentialList',
-                               function($scope, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, queryCredentialList) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Credentials', 
+                               function($scope, storage, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, Credentials) {
                                  $scope.selectedRelExpiration = "1d";
+                                 
+
                                  $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
-                                 Identity.query(function(data) {
-                                   $scope.identities = data.data;
-                                 });
+
                                  Identity.get({identityId: $routeParams.identityId}, function (data) {}).$promise.then (function (result) {
                                    $scope.identity = result.data[0];
                                    $scope.identityName = $scope.identity.attributes.name;
@@ -93,14 +93,41 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.client_id = $location.search().client_id;
                                    $scope.nonce = $location.search().nonce;
                                    $scope.requested_attrs = $location.search().requested_attrs;
+                                   $scope.requested_verified_attrs = $location.search().requested_verified_attrs;
+                                   $scope.creds = decodeURIComponent($location.search().credential);
+                                   $scope.new_credential = JSON.parse($scope.creds);
+                                   //storage.clearAll();
+                                   storage.bind($scope, 'sampleData', {defaultValue: []});
+                                   $scope.getNewCred = function(){
+                                    var new_credential = $scope.new_credential;
+                                    console.log("New Credential: "+ $scope.sampleData);
+                                    console.log("Index of new credential in localStorage: "+ $scope.sampleData.indexOf(JSON.stringify(new_credential))  );
+                                    if($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1){
+                                      $scope.sampleData.push(JSON.stringify(new_credential));
+                                      document.getElementById('val').value = $scope.sampleData;
+                                    }
+                                   };
+
+                                  //   var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
+                                  //   var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
+                                  //   var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
+                                  //   var subject_key = $scope.new_credential["data"][0]["attributes"]["credential"]["subject"];
+                                  
+                                   
                                    if (undefined !== $scope.requested_attrs) {
                                      $scope.requestedInfos = $scope.requested_attrs.split(",");
+                                   }
+                                   if (undefined !== $scope.requested_verified_attrs) {
+                                     $scope.requestedVerifiedAttrs = $scope.requested_verified_attrs.split(",");
+                                   }
+                                   $scope.getVerifiedAttrs = function() {
+                                     return $scope.requestedVerifiedAttrs;
                                    }
                                    $scope.redirect_uri = decodeURIComponent($location.search().redirect_uri);
                                    $scope.issue_type = $location.search().issue_type;
                                    $scope.selectIdentity = $scope.client_id;
-                                   $scope.issuedCredentials = $location.search().credential;
 
+                                   
                                    $scope.saved = localStorage.getItem ('default_identities');
                                    $scope.audiences = 
                                      (localStorage.getItem ('default_identities')!==null) ?
@@ -138,6 +165,9 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
                                      $scope.updateAttrs(attributes);
                                    });
+                                   $scope.credentials = Credentials.query({identityName: $scope.identity.attributes.name}, function(credentials) {
+                                     
+                                   });
                                    $scope.getAttrs = function () {
                                      if (undefined == $scope.attributes.data) {
                                        return [];
@@ -147,6 +177,22 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      } else {
                                        return [$scope.attributes.data];
                                      }
+                                   }
+                                   $scope.getCreds = function () {
+                                     if (undefined == $scope.credentials) {
+                                       return [];
+                                     }
+                                     return $scope.credentials.data;
+                                   }
+                                   $scope.getAttributeName = function(cred) {
+                                      return cred.attributes.record[0].value.split("->")[0].split(".")[1];
+                                   }
+                                   $scope.getCredExpiration = function(cred) {
+                                     var arr = cred.attributes.record[0].value.split("|");
+                                     return $scope.toDate(arr[arr.length-1]);
+                                   }
+                                   $scope.getIssuer = function(cred) {
+                                     return cred.attributes.record[0].value.split(".")[0];
                                    }
                                    $scope.audRealNames = {};
                                    $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}).$promise.then (function(attributes) {
@@ -187,6 +233,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                    $scope.new_attribute.data.type = "record";
                                    $scope.new_attribute.data.attributes = new Object();
                                    $scope.new_attribute.data.attributes.record = [];
+
                                    $scope.addAttribute = function() {
                                      var attrs_to_save = $scope.new_attribute_values.split(",");
                                      for (var i = 0; i<attrs_to_save.length; i++) {
@@ -196,6 +243,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                        rec["value"] = attrs_to_save[i];
                                        $scope.new_attribute.data.attributes.record.push(rec);
                                      }
+
 
                                      Attributes.save({identityName: $scope.identity.attributes.name}, $scope.new_attribute).$promise.then (function(result) {
                                        $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
@@ -208,18 +256,6 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
 
                                      });
                                    };
-                                 
-                                
-                                  $scope.displayCredentialList = function(){
-                                    console.log("*** Havij *** " + queryCredentialList);
-                                    $scope.credentialList = queryCredentialList;
-                                  }
-
-                                  $scope.SaveCredential = function(name){
-                                    $scope.savedCredential = name;
-
-                                  }
-
                                    $scope.addRequestedAttribute = function(requestedAttribute) {
                                      var new_attribute = new Attributes();
                                      new_attribute.data = new Object();
@@ -353,7 +389,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$routeParams', 
                                      var requestor = $scope.client_id;
                                      var exp = $scope.selectedRelExpiration;
 
-                                     IdTokenIssuer.issue ({issuer: $scope.identityName, audience: requestor, attributes: $scope.attrs, expiration: exp, nonce: $scope.nonce}).$promise.then (function (tokenData) {
+                                     IdTokenIssuer.issue ({issuer: $scope.identityName, audience: requestor, attributes: $scope.attrs, expiration: exp, nonce: $scope.nonce, verified_attributes: $scope.requested_verified_attrs}).$promise.then (function (tokenData) {
                                        if ('ticket' === $scope.issue_type) {
                                          $window.location.href = $scope.redirect_uri
                                            +"?ticket="+tokenData.data[0].attributes.ticket

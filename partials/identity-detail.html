@@ -1,83 +1,70 @@
 <div class="container-fluid">
   <div class="row top">
     <div class="col-md-12">
-
+    
       <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
         <img src="img/gnet.png" style="margin:2px; width:50px;"/>  
         {{identityName}}</h1>
-
-      </div>
+      
     </div>
-    <div class="row requestinfo" ng-show="selectIdentity">
-      <div><b>{{selectIdentity}}</b> requests an identity with
-        the following information:</div>
-        <ul>
-          <li ng-repeat="requestedInfo in requestedInfos">
-            {{requestedInfo}}
-          </li>
-        </ul>
-      </div>
+  </div>
+  <div class="row requestinfo" ng-show="selectIdentity">
+    <div><b>{{selectIdentity}}</b> requests an identity with
+      the following information:</div>
+    <ul>
+      <li ng-repeat="requestedInfo in requestedInfos">
+      {{requestedInfo}}
+      </li>
+    </ul>
+  </div>
 
-      <div class="content">
-        <h2><i style="color:#555" class="fa fa-chain"/> List of Credentials</h2>
-        <tr>
-          <td>
-            <select>
-              <option>
-                {{issuedCredentials}}
-              </option>
-            </select>
-          </td>
-          <td>
-            <input type="text" class="new_verification"
-              placeholder="Credential Name"
-            ng-model="credential_Name">
-          </td>
-          <td style="text-align:right;">
-            <a ng-click="SaveCredential(credential_Name)" style="height:2em;"
-            class="button grey">Save as</a>
-          </td>
-          <td>
-            <input type="text"  ng-model="savedCredential" 
-            style="float:right;" placeholder="">
-          </td>
-        </tr>
-    </div>
-
-      <form novalidate="novalidate" class="form-horizontal">
-        <div class="row content">
-          <div class="col-md-12 content-column">
-            <div class="content">
-              <!--Body content-->
-              <h2><i style="color:#555" class="fa fa-street-view"/> Identity Attributes</h2>
-              <table class="attribute">
-                <thead>
-                  <td>Attribute Name</td>
-                  <td>Attribute Value</td>
-                </thead>
-                <tbody
-                class="attribute-listing">
-                <tr ng-repeat-start="attr in getAttrs()" class="item">
-                  <td class="attr-name" style="{{attrs.indexOf(attr.id) == -1 ?
+  <form novalidate="novalidate" class="form-horizontal">
+    <div class="row content">
+      <div class="col-md-12 content-column">
+        <div class="content">
+          <!--Body content-->
+          <h2><i style="color:#555" class="fa fa-street-view"/> Identity Attributes</h2>
+            <table class="attribute">
+              <thead>
+                <td>Attribute Name</td>
+                <td>Attribute Value</td>
+              </thead>
+              <tbody
+              class="attribute-listing">
+              <tr ng-repeat-start="attr in getAttrs()" class="item">
+                <td class="attr-name" style="{{attrs.indexOf(attr.id) == -1 ?
                   'color: #ddd;' : '';}}"><b>{{attr.id}}</b> <i
-                  ng-show="{{requestedInfos.indexOf(attr.id) != -1}}"
-                  style="color: #2981e4;">(requested)</i></td>
-                  <td>
-                    <i style="{{attrs.indexOf(attr.id) == -1 ? 'color: #ddd;' :
+                    ng-show="{{requestedInfos.indexOf(attr.id) != -1}}"
+                    style="color: #2981e4;">(requested)</i></td>
+                <td>
+                  <i style="{{attrs.indexOf(attr.id) == -1 ? 'color: #ddd;' :
                     '';}}" ng-repeat="record in attr.attributes.record"><i class="tag grey
-                    small">{{record.value}}</i>{{$last ?
+                      small">{{record.value}}</i>{{$last ?
                     '' : ', '}}</i>
-                  </td>
-                  <td style="text-align:right;">
-                    <input ng-show="selectIdentity" id="check{{attr.id}}" checklist-model="attrs"
-                    checklist-value="attr.id" type=checkbox style="display:none;">
-                    <label ng-show="selectIdentity" for="check{{attr.id}}"
+                </td>
+                <td style="text-align:right;">
+                  <input ng-show="selectIdentity" id="check{{attr.id}}" checklist-model="attrs"
+                  checklist-value="attr.id" type=checkbox style="display:none;">
+                  <label ng-show="selectIdentity" for="check{{attr.id}}"
                     class="tag fa-share-alt fa {{attrs.indexOf(attr.id)
                     == -1 ? 'white' : 'blue';}}"
                     style="height:2em;width:3em;"/>
                     <a ng-click="removeAttribute(attr)" style="height:2em;
-                    width:3em;"
-                    class="button orange fa fa-trash"></a>
+                      width:3em;"
+                      class="button orange fa fa-trash"></a>
+                  </td>
+                </tr>
+                <tr ng-repeat-end>
+                  <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                    <hr >
+                  </td>
+                </tr>
+                <tr ng-repeat-start="v_attr in getVerifiedAttrs()" class="item">
+                  <td class="attr-name">
+                    <b>{{v_attr}}</b> <i style="color: #ff5c00;">(verfied)</i>
+                  </td>
+                  <td>
+                    <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i> Collecting appropriate credentials...
                   </td>
                 </tr>
                 <tr ng-repeat-end>
@@ -88,8 +75,8 @@
                 <tr ng-show="requestedAttributeMissing()" ng-repeat-start="requestedAttr in missingAttrs">
                   <td>
                     <b>{{requestedAttr}}</b> <i
-                    ng-show="{{requestedInfos.indexOf(requestedAttr) != -1}}"
-                    style="color: #D45500;">(requested but not existant)</i>
+                      ng-show="{{requestedInfos.indexOf(requestedAttr) != -1}}"
+                      style="color: #D45500;">(requested but not existant)</i>
                   </td>
                   <td>
                     <input type="text"  class="new_attribute" placeholder="Value"
@@ -98,8 +85,8 @@
                   </td>
                   <td style="text-align:right;">
                     <a ng-click="addRequestedAttribute(requestedAttr)"
-                    style="height:2em;width:3em;"
-                    class="button grey fa fa-plus"></a>
+                      style="height:2em;width:3em;"
+                      class="button grey fa fa-plus"></a>
                   </td>
                 </tr>
                 <tr ng-repeat-end>
@@ -107,7 +94,7 @@
                     <hr >
                   </td>
                 </tr>
-                <tr>
+                <tr >
                   <td>
                     <input type="text" class="new_attribute"
                     placeholder="Attribute Name"
@@ -119,113 +106,192 @@
                   </td>
                   <td style="text-align:right;">
                     <a ng-click="addAttribute()" style="height:2em;width:3em;"
-                    class="button grey fa fa-plus"></a>
+                      class="button grey fa fa-plus"></a>
                   </td>
                 </tr>
 
-              </tbody>
-            </table>
-            <div ng-show="selectIdentity">
-              <br/>
-              <!--Body content-->
-              <h2><i style="color:#555" class="fa fa-share-alt"/> Issue Token</h2>
+                </tbody>
+              </table>
+              <div ng-show="selectIdentity">
+                <br/>
+                <!--Body content-->
+                <h2><i style="color:#555" class="fa fa-share-alt"/> Issue Token</h2>
 
-              <i ng-show="notRequestedAttributeShared()"
-              style="color: #D45500;" class="fa fa-warning"> More attributes
-              than requested are shared.</i>
-              <br/>
-              <div>
-                <label>Token Lifetime:</label>
-                <label style="float:right;" class="selectbutton fa">
-                  <select
-                  class="button grey"
-                  style="min-width: 12em;"
-                  name="relSelect"
-                  ng-model="selectedRelExpiration">
-                  <option value="5m">5 Minutes</option>
-                  <option value="1h">1 Hour</option>
-                  <option value="1d">1 Day</option>
-                  <option value="7d">1 Week</option>
-                </select>
-              </label>
-              <br/>
-              <a class="button grey fa fa-share-alt" style="width:100%;"
-              ng-click="acceptRequest()"> Share Information and Login</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="content">
-          <h2 ><i style="color:#555" class="fa fa-chain"/> Identity
-            Tokens</h2>
-            <table class="attribute">
-              <thead style="text-align: center;">
-                <td>
-                  Audience
-                </td>
-                <td>
-                  Expired
-                </td>
-                <td>
-                  Attributes
-                </td>
-                <td>
-                  Actions
-                </td>
-              </thead>
-              <tbody style="text-align:
-              center;"
-              class="attribute-listing">
-              <tr ng-repeat-start="grant in grants.data" class="item">
-                <td class="attr-name"><a
-                  href="{{getSubjectForGrant(grant)}}">{{getRealNameForAud(grant)}}</a></td>
-                  <td>
-                    <b ng-show="isExpired(grant)" class="tag small 
-                    red fa fa-calendar-times-o"></b>
-                  </td>
-                  <td>
-                    <i ng-repeat="attr in
-                    getAttrsInGrant(grant)" class="button small grey">{{attr}}</i>
-                  </td>
-                  <td style="text-align:right;">
-
-                    <a type="button" class="button grey fa fa-info-circle"
-                    ng-click="isCollapsed = !isCollapsed"/>
-                    <a class="button orange fa fa-unlink"
-                    ng-click="removeGrant(grant)"/>
-
-                  </td>
-                </tr>
-                <tr ng-repeat-end>
-                  <td colspan="5"  style="padding-top: 0; padding-bottom:
-                  0;" >
-                  <div style="word-break: break-all;" >
-                    <div class="well
-                    well-lg" style="text-align: left;"
-                    collapse="isCollapsed">
-                    <b>{{isExpired(grant) ? '!!!EXPIRED!!!' : ''}}</b><br
-                    ng-show="isExpired(grant)"/>
-                    Issued At:<br/><b>
-                    {{toDate(decodeGrantToken(grant).iat)}}</b><br/>
-                    Valid From:<br/>
-                    <b>{{toDate(decodeGrantToken(grant).nbf)}}</b><br/>
-                    Valid Until:<br/>
-                    <b>{{toDate(decodeGrantToken(grant).exp)}}</b><br/>
-                    Label:<br/> <b>{{grant.id}}</b><br/>
-                    Token:<br/> <b>{{grant.record[0].value}}</b><br/>
+                  <i ng-show="notRequestedAttributeShared()"
+                    style="color: #D45500;" class="fa fa-warning"> More attributes
+                    than requested are shared.</i>
+                  <br/>
+                  <div>
+                    <label>Token Lifetime:</label>
+                    <label style="float:right;" class="selectbutton fa">
+                      <select
+                        class="button grey"
+                        style="min-width: 12em;"
+                        name="relSelect"
+                        ng-model="selectedRelExpiration">
+                        <option value="5m">5 Minutes</option>
+                        <option value="1h">1 Hour</option>
+                        <option value="1d">1 Day</option>
+                        <option value="7d">1 Week</option>
+                      </select>
+                    </label>
+                    <br/>
+                    <a class="button grey fa fa-share-alt" style="width:100%;"
+                      ng-click="acceptRequest()"> Share Information and Login</a>
                   </div>
-                  <hr ng-show="!$last">
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+              
+              <div class="content">
+                <!--Body content-->
+                <h2><i style="color:#555" class="fa fa-drivers-license"/> Credentials</h2>
+                <table class="attribute">
+                  <thead>
+                    <td>Name</td>
+                    <td>Attribute</td>
+                    <td>Issuer</td>
+                    <td>Expiration</td>
+                  </thead>
+                  <tbody
+                       class="attribute-listing">
+                    <tr ng-repeat-start="cred in getCreds()" class="item">
+                      <td class="attr-name"><b>{{cred.id}}</b> 
+                      </td>
+                      <td>
+                        {{getAttributeName(cred)}}
+                      </td>
+                      <td>
+                        {{getIssuer(cred)}}
+                      </td>
+                      <td>
+                        {{getCredExpiration(cred)}}
+                      </td>
+                      <td style="text-align:right;">
+                          <a ng-click="removeCredential(cred)" style="height:2em;
+                          width:3em;"
+                                                              class="button orange fa fa-trash"></a>
+                      </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                        <hr >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="content" data-ng-repeat="data in sampleData">
+                {{data}}
+              </div>
+              <input type="tel" placeholder="New Credential"  id="val" />
+              
+              <button data-ng-click="getNewCred()">Show Newly Created Credential</button>
+              <div class="content">
+                <!--Body content-->
+                <h2><i style="color:#555" class="fa fa-drivers-license"/> Newly Created Credentials</h2>
+                <table class="attribute">
+                  <thead>
+                    <td>Name</td>
+                  </thead>
+                  <tbody
+                       class="attribute-listing">
+                    <tr  class="item">
+                      <!-- <td class="attr-name"><b>{{getSavedCreds()}}</b> 
+                      </td> -->
+                      <td style="text-align:right;">
+                          <a ng-click="removeCredential(cred)" style="height:2em;
+                          width:3em;"
+                                                              class="button orange fa fa-trash"></a>
+                      </td>
+                      <td style="text-align:right;">
+                          <input ng-model="newCredName" placeholder="Enter new Credential Name">
+                          <a ng-click="changeCredentialName(newCredName)" style="height:2em;
+                          width:3em;"
+                                                              class="button small grey fa fa-plus"></a>
+                      </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                        <hr >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="content">
+                <h2 ><i style="color:#555" class="fa fa-chain"/> Identity
+                    Tokens</h2>
+                <table class="attribute">
+                  <thead style="text-align: center;">
+                    <td>
+                      Audience
+                    </td>
+                    <td>
+                      Expired
+                    </td>
+                    <td>
+                      Attributes
+                    </td>
+                    <td>
+                      Actions
+                    </td>
+                  </thead>
+                  <tbody style="text-align:
+                  center;"
+                         class="attribute-listing">
+                    <tr ng-repeat-start="grant in grants.data" class="item">
+                      <td class="attr-name"><a
+                          href="{{getSubjectForGrant(grant)}}">{{getRealNameForAud(grant)}}</a></td>
+                      <td>
+                        <b ng-show="isExpired(grant)" class="tag small 
+                        red fa fa-calendar-times-o"></b>
+                      </td>
+                      <td>
+                        <i ng-repeat="attr in
+                        getAttrsInGrant(grant)" class="button small grey">{{attr}}</i>
+                      </td>
+                      <td style="text-align:right;">
+
+                        <a type="button" class="button grey fa fa-info-circle"
+                                         ng-click="isCollapsed = !isCollapsed"/>
+                          <a class="button orange fa fa-unlink"
+                             ng-click="removeGrant(grant)"/>
+
+                      </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td colspan="5"  style="padding-top: 0; padding-bottom:
+                      0;" >
+                      <div style="word-break: break-all;" >
+                        <div class="well
+                        well-lg" style="text-align: left;"
+                                 collapse="isCollapsed">
+                          <b>{{isExpired(grant) ? '!!!EXPIRED!!!' : ''}}</b><br
+                                 ng-show="isExpired(grant)"/>
+                          Issued At:<br/><b>
+                        {{toDate(decodeGrantToken(grant).iat)}}</b><br/>
+                      Valid From:<br/>
+                      <b>{{toDate(decodeGrantToken(grant).nbf)}}</b><br/>
+                      Valid Until:<br/>
+                      <b>{{toDate(decodeGrantToken(grant).exp)}}</b><br/>
+                      Label:<br/> <b>{{grant.id}}</b><br/>
+                      Token:<br/> <b>{{grant.record[0].value}}</b><br/>
+                        </div>
+                        <hr ng-show="!$last">
+                      </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+
+              </div>
       </div>
-</div>
-</div>
-<hr>
-<a type="button" class="button grey fa fa-arrow-left"
-href="/index.html#/identities/"><b> Back to
-Identities</b></a><br/><br/>
-</form>
+    </div>
+    <hr>
+    <a type="button" class="button grey fa fa-arrow-left"
+                     href="/index.html#/identities/"><b> Back to
+                       Identities</b></a><br/><br/>
+  </form>
 </div>

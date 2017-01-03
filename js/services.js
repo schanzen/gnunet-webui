@@ -12,33 +12,16 @@ identityServices.factory('Identity', ['$resource',
     });
   }]);
 
-identityServices.factory('queryCredentialList', ['$resource',
-  function($resource){
-    var service = {
-
-        credential_list: {
-            issuedCredentials: ''
-        },
-
-        SaveState: function () {
-            sessionStorage.queryCredentialList = angular.toJson(service.credential_list);
-        },
-
-        RestoreState: function () {
-            service.credential_list = angular.fromJson(sessionStorage.queryCredentialList);
-        }
-    }
-
-    $resource.bind("savestate", service.SaveState);
-    $resource.bind("restorestate", service.RestoreState);
-
-    return service;
-}]);
-
-
 identityServices.factory('Attributes', ['$resource',
   function($resource){
     return $resource('http://localhost:7776/names/:attrName?ego=:identityName&record_type=ID_ATTR', {}, {
+      query: {method:'GET', params:{}, isArray:false},
+      remove: {method:'DELETE', params:{}, isArray:false}
+    });
+  }]);
+identityServices.factory('Credentials', ['$resource',
+  function($resource){
+    return $resource('http://localhost:7776/names/:attrName?ego=:identityName&record_type=CRED', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -51,7 +34,7 @@ identityServices.factory('ReverseNames', ['$resource',
   }]);
 identityServices.factory('IdTokenIssuer', ['$resource',
   function($resource){
-    return $resource('http://localhost:7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce', {}, {
+    return $resource('http://localhost:7776/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
       issue: {method:'GET', params:{}, isArray:false},
     });
   }]);
@@ -63,8 +46,6 @@ identityServices.factory('Grants', ['$resource',
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
-
-
 
 identityServices.factory('colorService', function(){
     function hashCode(str) { // java String#hashCode

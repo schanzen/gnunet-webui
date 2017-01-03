@@ -4,6 +4,8 @@
 
 var identityApp = angular.module('identityApp', [
   'ngRoute',
+  'ngCookies',
+  'angularLocalStorage',
   'ngAnimate',
   'identityAnimations',
   'identityServices',
