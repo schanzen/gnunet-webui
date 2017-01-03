@@ -26,6 +26,12 @@ identityServices.factory('Credentials', ['$resource',
       remove: {method:'DELETE', params:{}, isArray:false}
     });
   }]);
+identityServices.factory('SaveCredentials', ['$resource',
+  function($resource){
+    return $resource('http://localhost:7776/?ego=:ego&data=:data', {}, {
+      query: {method:'GET', params:{}, isArray:false}
+    });
+  }]);
 identityServices.factory('ReverseNames', ['$resource',
   function($resource){
     return $resource('http://localhost:7776/names/zkey?zkey=:zkey', {}, {

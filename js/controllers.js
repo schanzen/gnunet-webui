@@ -75,8 +75,8 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
                                    });
                                  };
                                }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Credentials', 
-                               function($scope, storage, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, Credentials) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Credentials', 'SaveCredentials',
+                               function($scope, storage, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, Credentials, SaveCredentials) {
                                  $scope.selectedRelExpiration = "1d";
                                  
 
@@ -87,6 +87,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                    $scope.identityName = $scope.identity.attributes.name;
                                    $scope.isCollapsed = 'false';
                                    $scope.attrs = [];
+                                   $scope.newCredName="";
                                    $scope.missingAttrs = [];
                                    $scope.req_attribute_values = {};
                                    $scope.requestedInfos = [];
@@ -96,24 +97,65 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                    $scope.requested_verified_attrs = $location.search().requested_verified_attrs;
                                    $scope.creds = decodeURIComponent($location.search().credential);
                                    $scope.new_credential = JSON.parse($scope.creds);
-                                   //storage.clearAll();
-                                   storage.bind($scope, 'sampleData', {defaultValue: []});
-                                   $scope.getNewCred = function(){
-                                    var new_credential = $scope.new_credential;
-                                    console.log("New Credential: "+ $scope.sampleData);
-                                    console.log("Index of new credential in localStorage: "+ $scope.sampleData.indexOf(JSON.stringify(new_credential))  );
-                                    if($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1){
-                                      $scope.sampleData.push(JSON.stringify(new_credential));
-                                      document.getElementById('val').value = $scope.sampleData;
-                                    }
-                                   };
-
-                                  //   var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
-                                  //   var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
-                                  //   var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
-                                  //   var subject_key = $scope.new_credential["data"][0]["attributes"]["credential"]["subject"];
-                                  
                                    
+                                  var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
+                                  var credential_ID = $scope.new_credential["data"][0]["id"];
+                                  var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
+                                  var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
+                                  var subject_key = $scope.new_credential["data"][0]["attributes"]["credential"]["subject"];
+                                  var signature = $scope.new_credential["data"][0]["attributes"]["credential"]["signature"];
+
+                                  storage.clearAll();
+                                  storage.bind($scope, 'sampleData', {
+                                      defaultValue: []
+                                  });
+                                  storage.bind($scope, 'credID', {
+                                      defaultValue: []
+                                  });
+                                  storage.bind($scope, 'credAttribute', {
+                                      defaultValue: []
+                                  });
+                                  storage.bind($scope, 'credIssuer', {
+                                      defaultValue: []
+                                  });
+                                  storage.bind($scope, 'credExp', {
+                                      defaultValue: []
+                                  });
+
+                                  $scope.getNewCred = function() {
+                                      var new_credential = $scope.new_credential;
+
+                                      if ($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1) {
+                                          $scope.sampleData.push(new_credential);
+                                          $scope.credID.push(JSON.stringify(credential_ID));
+                                          $scope.credAttribute.push(JSON.stringify(credential_attribute));
+                                          $scope.credIssuer.push(JSON.stringify(credential_issuer));
+                                          $scope.credExp.push(JSON.stringify(credential_expiration));
+                                      }
+                                  };
+
+                                   $scope.saveCredentialName = function(newName) {
+                                      var editItems = [];
+                                      editItems.push({
+                                          data: [{
+                                              "id": newName,
+                                              "type": "record",
+                                              "attributes": {
+                                                  "record": [{
+                                                      "record_type": "CRED",
+                                                      "value": JSON.parse($scope.credID) + " -> " + subject_key + " | " + signature + " | " + $scope.credExp
+                                                  }]
+                                              }
+                                          }]
+                                      });
+                                      var ego = newName;
+                                      SaveCredentials.query({
+                                          ego: ego,
+                                          data: JSON.stringify(editItems)
+                                      }).$promise.then(function(result) {
+
+                                      });
+                                  };                                
                                    if (undefined !== $scope.requested_attrs) {
                                      $scope.requestedInfos = $scope.requested_attrs.split(",");
                                    }
@@ -194,6 +236,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                    $scope.getIssuer = function(cred) {
                                      return cred.attributes.record[0].value.split(".")[0];
                                    }
+
                                    $scope.audRealNames = {};
                                    $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}).$promise.then (function(attributes) {
                                      //Get real names for audiences
