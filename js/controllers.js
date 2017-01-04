@@ -148,9 +148,9 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                               }
                                           }]
                                       });
-                                      var ego = newName;
-                                      SaveCredentials.query({
-                                          ego: ego,
+                                      
+                                      SaveCredentials.save({
+                                          ego: newName,
                                           data: JSON.stringify(editItems)
                                       }).$promise.then(function(result) {
 
