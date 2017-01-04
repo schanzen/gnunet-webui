@@ -150,7 +150,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                       });
                                       
                                       SaveCredentials.save({
-                                          ego: newName,
+                                          ego: newName},{
                                           data: JSON.stringify(editItems)
                                       }).$promise.then(function(result) {
 
