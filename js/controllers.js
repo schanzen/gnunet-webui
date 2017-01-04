@@ -97,64 +97,72 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                    $scope.requested_verified_attrs = $location.search().requested_verified_attrs;
                                    $scope.creds = decodeURIComponent($location.search().credential);
                                    $scope.new_credential = JSON.parse($scope.creds);
-                                   
-                                  var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
-                                  var credential_ID = $scope.new_credential["data"][0]["id"];
-                                  var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
-                                  var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
-                                  var subject_key = $scope.new_credential["data"][0]["attributes"]["credential"]["subject"];
-                                  var signature = $scope.new_credential["data"][0]["attributes"]["credential"]["signature"];
+                                    storage.clearAll();
+                                    // storage.bind($scope, ['sampleData', 'credID', 'credAttribute', 'credIssuer', 'credExp'], {
+                                    //     defaultValue: []
+                                    // });
+                                    storage.bind($scope, 'sampleData', {
+                                        defaultValue: []
+                                    });
+                                    storage.bind($scope, 'credID', {
+                                        defaultValue: []
+                                    });
+                                    storage.bind($scope, 'credAttribute', {
+                                        defaultValue: []
+                                    });
+                                    storage.bind($scope, 'credIssuer', {
+                                        defaultValue: []
+                                    });
+                                    storage.bind($scope, 'credExp', {
+                                        defaultValue: []
+                                    });
+                                    $scope.getNewCred = function() {
+                                        var new_credential = $scope.new_credential;
+                                        var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
+                                        var credential_ID = $scope.new_credential["data"][0]["id"];
+                                        var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
+                                        var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
 
-                                  storage.clearAll();
-                                  storage.bind($scope, 'sampleData', {
-                                      defaultValue: []
-                                  });
-                                  storage.bind($scope, 'credID', {
-                                      defaultValue: []
-                                  });
-                                  storage.bind($scope, 'credAttribute', {
-                                      defaultValue: []
-                                  });
-                                  storage.bind($scope, 'credIssuer', {
-                                      defaultValue: []
-                                  });
-                                  storage.bind($scope, 'credExp', {
-                                      defaultValue: []
-                                  });
-
-                                  $scope.getNewCred = function() {
-                                      var new_credential = $scope.new_credential;
-
-                                      if ($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1) {
-                                          $scope.sampleData.push(new_credential);
-                                          $scope.credID.push(JSON.stringify(credential_ID));
-                                          $scope.credAttribute.push(JSON.stringify(credential_attribute));
-                                          $scope.credIssuer.push(JSON.stringify(credential_issuer));
-                                          $scope.credExp.push(JSON.stringify(credential_expiration));
-                                      }
-                                  };
-
-                                   $scope.saveCredentialName = function(newName) {
-                                      var editItems = [];
-                                      editItems.push({
-                                          data: [{
-                                              "id": newName,
-                                              "type": "record",
-                                              "attributes": {
-                                                  "record": [{
-                                                      "record_type": "CRED",
-                                                      "value": JSON.parse($scope.credID) + " -> " + subject_key + " | " + signature + " | " + $scope.credExp
-                                                  }]
-                                              }
-                                          }]
-                                      });
-                                      
-                                      SaveCredentials.save({
-                                          ego: $scope.identity.attributes.name},
-                                          {data: editItems
-                                      }).$promise.then(function(result) {
-                                      });
-                                  };                                
+                                        if ($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1) {
+                                            $scope.sampleData.push(new_credential);
+                                            $scope.credID.push(JSON.stringify(credential_ID));
+                                            $scope.credAttribute.push(JSON.stringify(credential_attribute));
+                                            $scope.credIssuer.push(JSON.stringify(credential_issuer));
+                                            $scope.credExp.push(JSON.stringify(credential_expiration));
+                                        }
+                                    };
+                                    $scope.saveCredentialName = function(btnID, newName) {
+                                        var subject_key = JSON.stringify($scope.new_credential["data"][0]["attributes"]["credential"]["subject"]);
+                                        var signature = JSON.stringify($scope.new_credential["data"][0]["attributes"]["credential"]["signature"]);
+                                        var editItems = [];
+                                        editItems.push({
+                                            data: [{
+                                                "id": newName,
+                                                "type": "record",
+                                                "attributes": {
+                                                    "record": [{
+                                                        "record_type": "CRED",
+                                                        "value": JSON.parse($scope.credID) + " -> " +
+                                                            subject_key.replace(/"/g, '') + " | " +
+                                                            signature.replace(/"/g, '') + " | " +
+                                                            $scope.credExp,
+                                                        "expiration": "1 day"
+                                                    }]
+                                                }
+                                            }]
+                                        });
+                                        var new_credential_name = JSON.stringify(editItems);
+                                        console.log(new_credential_name.replace(/\\/g, ''));
+                                        SaveCredentials.save({
+                                            ego: $scope.identity.attributes.name
+                                        }, {
+                                            data: new_credential_name.replace(/\\/g, '')
+                                        }).$promise.then(function(result) {
+                                            console.log("response: " + result);
+                                            // var index = $scope.credID.indexOf(btnID);
+                                            // $scope.credID.splice(index, 1);
+                                        });
+                                    };   
                                    if (undefined !== $scope.requested_attrs) {
                                      $scope.requestedInfos = $scope.requested_attrs.split(",");
                                    }
