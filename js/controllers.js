@@ -136,7 +136,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                         var signature = JSON.stringify($scope.new_credential["data"][0]["attributes"]["credential"]["signature"]);
                                         var editItems = [];
                                         editItems.push({
-                                            data: [{
+                                            "data": [{
                                                 "id": newName,
                                                 "type": "record",
                                                 "attributes": {
@@ -145,23 +145,25 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                                         "value": JSON.parse($scope.credID) + " -> " +
                                                             subject_key.replace(/"/g, '') + " | " +
                                                             signature.replace(/"/g, '') + " | " +
-                                                            $scope.credExp,
+                                                            $scope.credExp + ' ',
                                                         "expiration": "1 day"
                                                     }]
                                                 }
                                             }]
                                         });
-                                        var new_credential_name = JSON.stringify(editItems);
-                                        console.log(new_credential_name.replace(/\\/g, ''));
-                                        SaveCredentials.save({
-                                            ego: $scope.identity.attributes.name
-                                        }, {
-                                            data: new_credential_name.replace(/\\/g, '')
-                                        }).$promise.then(function(result) {
-                                            console.log("response: " + result);
-                                            // var index = $scope.credID.indexOf(btnID);
-                                            // $scope.credID.splice(index, 1);
-                                        });
+                                      
+                                      
+                                      var saveNameValue = {data: editItems};
+                                      console.log("saveNameValue:  "+  JSON.stringify(saveNameValue.data));
+                                      
+                                      SaveCredentials.save({
+                                          ego: $scope.identity.attributes.name
+                                      }, {
+                                          data: saveNameValue.data
+                                      }).$promise.then(function(result) {
+                                          // var index = $scope.credID.indexOf(btnID);
+                                          // $scope.credID.splice(index, 1);
+                                      });
                                     };   
                                    if (undefined !== $scope.requested_attrs) {
                                      $scope.requestedInfos = $scope.requested_attrs.split(",");
