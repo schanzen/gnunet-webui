@@ -150,10 +150,9 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                       });
                                       
                                       SaveCredentials.save({
-                                          ego: newName},{
-                                          data: JSON.stringify(editItems)
+                                          ego: $scope.identity.attributes.name},
+                                          {data: editItems
                                       }).$promise.then(function(result) {
-
                                       });
                                   };                                
                                    if (undefined !== $scope.requested_attrs) {

@@ -28,7 +28,7 @@ identityServices.factory('Credentials', ['$resource',
   }]);
 identityServices.factory('SaveCredentials', ['$resource',
   function($resource){
-    return $resource('http://localhost:7776/');
+    return $resource('http://localhost:7776/names/');
   }]);
 identityServices.factory('ReverseNames', ['$resource',
   function($resource){
