@@ -165,12 +165,21 @@
                       </td>
                       <td>
                         {{getCredExpiration(cred)}}
+<<<<<<< HEAD
                       </td>
                       <td style="text-align:right;">
                           <a ng-click="removeCredential(cred)" style="height:2em;
                           width:3em;"
                                                               class="button orange fa fa-trash"></a>
                       </td>
+=======
+                      </td>
+                      <td style="text-align:right;">
+                          <a ng-click="removeCredential(cred)" style="height:2em;
+                          width:3em;"
+                                                              class="button orange fa fa-trash"></a>
+                      </td>
+>>>>>>> ava/master
                     </tr>
                     <tr ng-repeat-end>
                       <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
@@ -180,6 +189,54 @@
                   </tbody>
                 </table>
               </div>
+<<<<<<< HEAD
+=======
+              <!-- <div class="content" data-ng-repeat="data in sampleData">
+              </div> -->
+              <button data-ng-click="getNewCred()">Show Newly Created Credential</button>
+              <div class="content">
+                 <!--Body content-->
+                 <h2><i style="color:#555" class="fa fa-drivers-license"/> New Credentials</h2>
+                 <table class="attribute">
+                    <thead>
+                       <td>Name</td>
+                       <td>Attribute</td>
+                       <td>Issuer</td>
+                       <td>Expiration</td>
+                       <td>Save</td>
+                    </thead>
+                    <tbody class="attribute-listing">
+                       <tr class="item" id="{{id}}" data-ng-repeat="id in credID">
+                          <td class="attr-name">
+                             <b data-ng-repeat="id in credID">{{id}}</b>
+                          </td>
+                          <td data-ng-repeat="attribute in credAttribute">
+                             {{attribute}}
+                          </td>
+                          <td data-ng-repeat="issuer in credIssuer">
+                             {{issuer}}
+                          </td>
+                          <td data-ng-repeat="exp in credExp">
+                             {{exp}}
+                          </td>
+                          <td>
+                             <input ng-model="newCredName" placeholder="Enter new Credential Name">
+                             <a id="{{id}}" data-ng-repeat="id in credID"  ng-click="saveCredentialName(id, newCredName)" style="height:2em;width:3em;" class="button small grey fa fa-plus">
+                             </a>
+                          </td>
+                          <td style="text-align:right;">
+                             <a ng-click="removeCredential(cred)" style="height:2em; width:3em;" class="button orange fa fa-trash"></a>
+                          </td>
+                       </tr>
+                       <tr ng-repeat-end>
+                          <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                             <hr >
+                          </td>
+                       </tr>
+                    </tbody>
+                 </table>
+              </div>
+>>>>>>> ava/master
 
               <div class="content">
                 <h2 ><i style="color:#555" class="fa fa-chain"/> Identity
@@ -219,7 +276,10 @@
                                          ng-click="isCollapsed = !isCollapsed"/>
                           <a class="button orange fa fa-unlink"
                              ng-click="removeGrant(grant)"/>
+<<<<<<< HEAD
 
+=======
+>>>>>>> ava/master
                       </td>
                     </tr>
                     <tr ng-repeat-end>
@@ -246,8 +306,11 @@
                     </tr>
                   </tbody>
                 </table>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> ava/master
               </div>
       </div>
     </div>
@@ -256,4 +319,8 @@
                      href="/index.html#/identities/"><b> Back to
                        Identities</b></a><br/><br/>
   </form>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> ava/master
