@@ -118,6 +118,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
                                     });
                                     $scope.getNewCred = function() {
                                         var new_credential = $scope.new_credential;
+                                        console.log(JSON.stringify(new_credential));
                                         var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
                                         var credential_ID = $scope.new_credential["data"][0]["id"];
                                         var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
