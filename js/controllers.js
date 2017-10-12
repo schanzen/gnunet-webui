@@ -5,8 +5,8 @@
 var identityControllers = angular.module('identityControllers', []);
 
 
-identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'colorService', 'jwtService', '$location', '$window', 'Grants', 'ReverseNames',
-  function($scope, Identity, colorService, jwtService, $location, $window, Grants, ReverseNames) {
+identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
+  function($scope, Identity, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
     Identity.query(function(data) {
       $scope.identities = data.data;
     });
@@ -75,8 +75,8 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
       });
     };
   }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Grants', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Credentials', 'SaveCredentials',
-  function($scope, storage, $routeParams, Identity, Attributes, Grants, $location, IdTokenIssuer, $window, colorService, ReverseNames, Credentials, SaveCredentials) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Tickets', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Names',
+  function($scope, storage, $routeParams, Identity, Attributes, Tickets, $location, IdTokenIssuer, $window, colorService, ReverseNames, Names) {
     $scope.selectedRelExpiration = "1d";
 
 
@@ -87,6 +87,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.identityName = $scope.identity.attributes.name;
       $scope.isCollapsed = 'false';
       $scope.attrs = [];
+      $scope.audienceNames = {};
       $scope.newCredName="";
       $scope.missingAttrs = [];
       $scope.req_attribute_values = {};
@@ -94,109 +95,13 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.client_id = $location.search().client_id;
       $scope.nonce = $location.search().nonce;
       $scope.requested_attrs = $location.search().requested_attrs;
-      $scope.requested_verified_attrs = $location.search().requested_verified_attrs;
-      $scope.creds = decodeURIComponent($location.search().credential);
       storage.clearAll();
-      // storage.bind($scope, ['sampleData', 'credID', 'credAttribute', 'credIssuer', 'credExp'], {
-      //     defaultValue: []
-      // });
-      storage.bind($scope, 'sampleData', {
-        defaultValue: []
-      });
-      storage.bind($scope, 'credID', {
-        defaultValue: []
-      });
-      storage.bind($scope, 'credAttribute', {
-        defaultValue: []
-      });
-      storage.bind($scope, 'credIssuer', {
-        defaultValue: []
-      });
-      storage.bind($scope, 'credExp', {
-        defaultValue: []
-      });
-      $scope.getNewCred = function() {
-        var new_credential = $scope.new_credential;
-        console.log(JSON.stringify(new_credential));
-        var credential_attribute = $scope.new_credential["data"][0]["id"].split(".")["1"];
-        var credential_ID = $scope.new_credential["data"][0]["id"];
-        var credential_issuer = $scope.new_credential["data"][0]["attributes"]["credential"]["issuer"];
-        var credential_expiration = $scope.new_credential["data"][0]["attributes"]["credential"]["expiration"];
-
-        if ($scope.sampleData.indexOf(JSON.stringify(new_credential)) === -1) {
-          $scope.sampleData.push(new_credential);
-          $scope.credID.push(JSON.stringify(credential_ID));
-          $scope.credAttribute.push(credential_attribute);
-          $scope.credIssuer.push(credential_issuer);
-          $scope.credExp.push(JSON.stringify(credential_expiration));
-        }
-      };
-      if ("undefined" != $scope.creds) {
-        $scope.new_credential = JSON.parse($scope.creds);
-        $scope.getNewCred();
-      }
-
-      $scope.saveCredentialName = function(newName) {
-        var subject_key = JSON.stringify($scope.new_credential["data"][0]["attributes"]["credential"]["subject"]);
-        var signature = JSON.stringify($scope.new_credential["data"][0]["attributes"]["credential"]["signature"]);
-        var editItems = [];
-        editItems.push({
-          "data": [{
-            "id": newName,
-            "type": "record",
-            "attributes": {
-              "record": [{
-                "record_type": "CRED",
-                "value": JSON.parse($scope.credID) + " -> " +
-                  subject_key.replace(/"/g, '') + " | " +
-                  signature.replace(/"/g, '') + " | " +
-                  $scope.credExp + ' ',
-                "expiration": "1 day"
-              }]
-            }
-          }]
-        });
-
-
-        var saveNameValue = {data: editItems};
-        console.log("saveNameValue:  "+  JSON.stringify(saveNameValue.data));
-
-        SaveCredentials.save({
-          ego: $scope.identity.attributes.name
-        }, {
-          data: saveNameValue.data
-        }).$promise.then(function(result) {
-          // var index = $scope.credID.indexOf(btnID);
-          // $scope.credID.splice(index, 1);
-        });
-      };   
       if (undefined !== $scope.requested_attrs) {
         $scope.requestedInfos = $scope.requested_attrs.split(",");
-      }
-      if (undefined !== $scope.requested_verified_attrs) {
-        $scope.requestedVerifiedAttrs = $scope.requested_verified_attrs.split(",");
-      }
-      $scope.getVerifiedAttrs = function() {
-        return $scope.requestedVerifiedAttrs;
       }
       $scope.redirect_uri = decodeURIComponent($location.search().redirect_uri);
       $scope.issue_type = $location.search().issue_type;
       $scope.selectIdentity = $scope.client_id;
-
-
-      $scope.saved = localStorage.getItem ('default_identities');
-      $scope.audiences = 
-        (localStorage.getItem ('default_identities')!==null) ?
-        JSON.parse ($scope.saved) : [];
-      localStorage.setItem ('default_identities', JSON.stringify ($scope.audiences));
-
-      if (undefined != $scope.client_id) {
-        ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
-          if (data.data.length === 1) {
-            $scope.selectIdentity = data.data[0].attributes.name;
-          }
-        });
-      }
 
       for (var i = 0; i < $scope.requestedInfos.length; i++) {
         $scope.req_attribute_values[$scope.requestedInfos[i]] = [];
@@ -221,8 +126,10 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
         $scope.updateAttrs(attributes);
       });
-      $scope.credentials = Credentials.query({identityName: $scope.identity.attributes.name}, function(credentials) {
-
+      $scope.names = Names.get({identityName: $scope.identity.attributes.name}, function(names) {
+        for (var i = 0; i < names.data.length; i++) {
+          $scope.audienceNames[names.data[i].attributes.record[0].value] = names.data[i].id;
+        }
       });
       $scope.getAttrs = function () {
         if (undefined == $scope.attributes.data) {
@@ -234,48 +141,24 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
           return [$scope.attributes.data];
         }
       }
-      $scope.getCreds = function () {
-        if (undefined == $scope.credentials) {
-          return [];
-        }
-        return $scope.credentials.data;
-      }
-      $scope.getAttributeName = function(cred) {
-        return cred.attributes.record[0].value.split("->")[0].split(".")[1];
-      }
-      $scope.getCredExpiration = function(cred) {
-        var arr = cred.attributes.record[0].value.split("|");
-        return $scope.toDate(arr[arr.length-1]);
-      }
-      $scope.getIssuer = function(cred) {
-        return cred.attributes.record[0].value.split(".")[0];
-      }
-      $scope.audRealNames = {};
-      $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}).$promise.then (function(attributes) {
+      $scope.grants = Tickets.get({identityName: $scope.identity.attributes.name}).$promise.then (function(tickets) {
         //Get real names for audiences
-        if (null == attributes.data)
+        if (null == tickets.data)
         {
           return;
         }
-        for (var i = 0; i < attributes.data.length; i++) {
-          var aud = $scope.getSubjectForGrant(attributes.data[i]);
-          ReverseNames.query({zkey:aud}).$promise.then (function(data) {
-            $scope.audRealNames[aud] = aud;
-            $scope.audRealNames[data.data.id] = data.data.attributes.name;
-          });
-        }
-        $scope.grants = attributes;
+        $scope.tickets = tickets;
       });
       $scope.getSubjectForGrant = function(grant) {
         return grant.attributes.record[0].value.split(";")[1];
         //return JSON.parse(atob(grant.record[0].value.split(".")[1])).aud;
       };
       $scope.getRealNameForAud = function (grant) {
-        var aud = $scope.getSubjectForGrant(grant);
+        /*var aud = $scope.getSubjectForGrant(grant);
         if (null !== $scope.audRealNames[aud])
           return $scope.audRealNames[aud];
         else
-          return aud;
+          return aud;*/
       };
       $scope.decodeGrantToken = function (grant) {
         //var parts = grant.record[0].value.split(".");
@@ -286,28 +169,16 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.new_attribute = new Attributes();
       $scope.new_attribute.data = new Object();
       $scope.new_attribute.data.id = "";
-      $scope.new_attribute.data.type = "record";
+      $scope.new_attribute.data.type = "attribute";
       $scope.new_attribute.data.attributes = new Object();
-      $scope.new_attribute.data.attributes.record = [];
+      $scope.new_attribute.data.attributes.value = "";
 
       $scope.addAttribute = function() {
-        var attrs_to_save = $scope.new_attribute_values.split(",");
-        for (var i = 0; i<attrs_to_save.length; i++) {
-          var rec = new Object();
-          rec["expiration"] = "never";
-          rec["record_type"] = "ID_ATTR";
-          rec["value"] = attrs_to_save[i];
-          $scope.new_attribute.data.attributes.record.push(rec);
-        }
-
-
         Attributes.save({identityName: $scope.identity.attributes.name}, $scope.new_attribute).$promise.then (function(result) {
           $scope.attributes = Attributes.get({identityName: $scope.identity.attributes.name}, function(attributes) {
             $scope.updateAttrs(attributes);
-            $scope.new_attribute.data.record = [];
+            $scope.new_attribute.data.attributes = new Object();
             $scope.new_attribute.data.id = "";
-            $scope.new_attribute_values = "";
-
           });
 
         });
@@ -381,11 +252,12 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         return grant.attributes.record[0].value.split(";")[2].split(",");
       }
       $scope.removeGrant = function(grant) {
-        var dec_token = $scope.decodeGrantToken(grant);
+        /* TODO */
+        /*var dec_token = $scope.decodeGrantToken(grant);
         Grants.remove({ identityName: $scope.identity.attributes.name, recordName: grant.id }).$promise.then (function(result) {
           $scope.grants = Grants.get({identityName: $scope.identity.attributes.name}, function(attributes) {});
 
-        });
+        });*/
       };
 
       $scope.getMissingAttrs = function () {
@@ -417,6 +289,13 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         }
         return false;
       };
+      $scope.getAudienceNameForKey = function(key) {
+        if (undefined == $scope.audienceNames[key]) {
+          return key;
+        } else {
+          return $scope.audienceNames[key];
+        }
+      };
 
 
       $scope.isDefaultForAudience = function () {
@@ -424,7 +303,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         for (i = 0; i < $scope.audiences.length; i++)
         {
           if ($scope.audiences[0].aud === $scope.client_id &&
-            $scope.audiences[0].iss === $scope.identity.attributes.name)
+              $scope.audiences[0].iss === $scope.identity.attributes.name)
           {
             return true;
           }
