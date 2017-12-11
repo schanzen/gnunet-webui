@@ -3,7 +3,7 @@
     <div class="col-md-12">
 
       <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
-        <img src="img/gnet.png" style="margin:2px; width:50px;"/>  
+        <img src="img/gnet.png" style="margin:2px; width:50px;"/>
         {{identityName}}</h1>
 
     </div>
@@ -19,7 +19,7 @@
   </div>
 
   <form novalidate="novalidate" class="form-horizontal">
-  
+
     <div class="row content">
       <div class="col-md-12 content-column">
         <div class="content">
@@ -103,7 +103,10 @@
               </label>
               <br/>
               <a class="button grey fa fa-share-alt" style="width:100%;"
-                                                     ng-click="acceptRequest()"> Share Information and Login</a>
+              ng-click="acceptRequest()"> Share Information and Login</a>
+              <br/><br/>
+              <a class="button blue" style="width:100%;"
+              ng-click="loginOP()"> Authorize OpenID Connect Service</a>
             </div>
           </div>
         </div>

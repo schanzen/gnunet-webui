@@ -19,6 +19,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
     $scope.new_identity.data.type = "ego";
     $scope.new_identity.data.attributes.name = "";
     $scope.id_request = $location.search().r;
+    $scope.parameter = $location.search();
     if (undefined !== $scope.id_request)
     {
       var params = $scope.id_request.split("?")[1].split("&");
@@ -26,6 +27,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
       for (i = 0; i < params.length; i++)
       {
         var keyval = params[i].split("=");
+
         if ("client_id" === keyval[0]) {
           $scope.client_id = keyval[1];
           $scope.selectIdentity = keyval[1];
@@ -75,8 +77,8 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
       });
     };
   }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Tickets', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Names',
-  function($scope, storage, $routeParams, Identity, Attributes, Tickets, $location, IdTokenIssuer, $window, colorService, ReverseNames, Names) {
+identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies','$http', 'storage','$routeParams', 'Identity', 'Attributes', 'Tickets', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Names',
+  function($scope, $cookies, $http, storage, $routeParams, Identity, Attributes, Tickets, $location, IdTokenIssuer, $window, colorService, ReverseNames, Names) {
     $scope.selectedRelExpiration = "1d";
 
 
@@ -94,6 +96,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.requestedInfos = [];
       $scope.client_id = $location.search().client_id;
       $scope.nonce = $location.search().nonce;
+      $scope.parameter = $location.search();
       $scope.requested_attrs = $location.search().requested_attrs;
       storage.clearAll();
       if (undefined !== $scope.requested_attrs) {
@@ -108,13 +111,15 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       }
       $scope.updateAttrs = function (attributes) {
         $scope.attrs = [];
-        if (attributes.data instanceof Array) {
-          for (var i = 0; i < attributes.data.length; i++)
-          {
-            $scope.attrs.push(attributes.data[i].id);
+        if(attributes.data !==  null){
+          if (attributes.data instanceof Array) {
+            for (var i = 0; i < attributes.data.length; i++)
+            {
+              $scope.attrs.push(attributes.data[i].id);
+            }
+          } else {
+            $scope.attrs.push(attributes.data.id);
           }
-        } else {
-          $scope.attrs.push(attributes.data.id);
         }
         $scope.missingAttrs = [];
         for (var i = 0; i < $scope.requestedInfos.length; i++) {
@@ -127,8 +132,10 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         $scope.updateAttrs(attributes);
       });
       $scope.names = Names.get({identityName: $scope.identity.attributes.name}, function(names) {
-        for (var i = 0; i < names.data.length; i++) {
-          $scope.audienceNames[names.data[i].attributes.record[0].value] = names.data[i].id;
+        if(names.data !== null){
+          for (var i = 0; i < names.data.length; i++) {
+            $scope.audienceNames[names.data[i].attributes.record[0].value] = names.data[i].id;
+          }
         }
       });
       $scope.getAttrs = function () {
@@ -333,6 +340,61 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
               "#token="+encodeURIComponent(tokenData.data[0].attributes.token)
           }
         });
+      }
+
+      $scope.loginOP = function() {
+        let redirect_url = "http://localhost:7776/idp/authorize"
+          +"?response_type="+$scope.parameter.response_type
+          +"&client_id="+$scope.parameter.client_id
+          +"&scope="+$scope.parameter.scope
+          +"&redirect_uri="+$scope.parameter.redirect_uri;
+          //Needs to be changed due to nonce specification
+          if($scope.parameter.nonce !== ""){
+            redirect_url+="&nonce="+($scope.parameter.nonce+1);
+          }
+          //May be unnecessary due to enduser authentication
+          if($scope.parameter.display !== ""){
+            redirect_url+="&display="+$scope.parameter.display;
+          }
+          //May be unnecessary due to enduser authentication
+          if($scope.parameter.prompt !== ""){
+            redirect_url+="&prompt="+$scope.parameter.prompt;
+          }
+          if($scope.parameter.max_age !== ""){
+            redirect_url+="&max_age="+$scope.parameter.max_age;
+          }
+          if($scope.parameter.ui_locales !== ""){
+            redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
+          }
+          if($scope.parameter.response_mode !== ""){
+            redirect_url+="&response_mode="+$scope.parameter.response_mode;
+          }
+          if($scope.parameter.id_token_hint !== ""){
+            redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
+          }
+          if($scope.parameter.login_hint !== ""){
+            redirect_url+="&login_hint="+$scope.parameter.login_hint;
+          }
+          if($scope.parameter.acr_values !== ""){
+            redirect_url+="&acr_values="+$scope.parameter.acr_values;
+          }
+          // $cookies.put('Authorization', $routeParams.identityId);
+          // $window.location.href = redirect_url;
+          // Simple GET request example:
+          $http({
+            method: 'POST',
+            url: redirect_url,
+            headers: { 'Authorization' : $routeParams.identityId }
+          }).then(function successCallback(response) {
+            console.log("success");
+              // this callback will be called asynchronously
+              // when the response is available
+            }, function errorCallback(response) {
+              console.log("error");
+              // called asynchronously if an error occurs
+              // or server returns response with an error status.
+            });
+          return;
       }
 
     });
