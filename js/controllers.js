@@ -5,8 +5,8 @@
 var identityControllers = angular.module('identityControllers', []);
 
 
-identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
-  function($scope, Identity, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
+identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'Login', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
+  function($scope, Identity, Login, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
     Identity.query(function(data) {
       $scope.identities = data.data;
     });
@@ -74,6 +74,53 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
         Identity.query(function(data) {
           $scope.identities = data.data;
         });
+      });
+    };
+    $scope.loginIdentity = function(identity) {
+      Login({ "identity" : identity.id }).$promise.then (function(result) {
+        let redirect_url = "#/identities/"+identity.id;
+        if($scope.parameter.response_type !== "" && $scope.parameter.response_type !== undefined){
+          redirect_url+="?response_type="+$scope.parameter.response_type;
+        }
+        if($scope.parameter.client_id !== "" && $scope.parameter.client_id !== undefined){
+          redirect_url+="&client_id="+$scope.parameter.client_id;
+        }
+        if($scope.parameter.scope !== "" && $scope.parameter.scope !== undefined){
+          redirect_url+="&scope="+$scope.parameter.scope;
+        }
+        if($scope.parameter.redirect_uri !== "" && $scope.parameter.redirect_uri !== undefined){
+          redirect_url+="&redirect_uri="+$scope.parameter.redirect_uri;
+        }
+        if($scope.parameter.nonce !== "" && $scope.parameter.nonce !== undefined){
+          redirect_url+="&nonce="+($scope.parameter.nonce+1);
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.display !== "" && $scope.parameter.display !== undefined){
+          redirect_url+="&display="+$scope.parameter.display;
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.prompt !== "" && $scope.parameter.prompt !== undefined){
+          redirect_url+="&prompt="+$scope.parameter.prompt;
+        }
+        if($scope.parameter.max_age !== "" && $scope.parameter.max_age !== undefined){
+          redirect_url+="&max_age="+$scope.parameter.max_age;
+        }
+        if($scope.parameter.ui_locales !== "" && $scope.parameter.ui_locales !== undefined){
+          redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
+        }
+        if($scope.parameter.response_mode !== "" && $scope.parameter.response_mode !== undefined){
+          redirect_url+="&response_mode="+$scope.parameter.response_mode;
+        }
+        if($scope.parameter.id_token_hint !== "" && $scope.parameter.id_token_hint !== undefined){
+          redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
+        }
+        if($scope.parameter.login_hint !== "" && $scope.parameter.login_hint !== undefined){
+          redirect_url+="&login_hint="+$scope.parameter.login_hint;
+        }
+        if($scope.parameter.acr_values !== "" && $scope.parameter.acr_values !== undefined){
+          redirect_url+="&acr_values="+$scope.parameter.acr_values;
+        }
+        $window.location.href=redirect_url;
       });
     };
   }]);
@@ -378,22 +425,55 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies','$htt
           if($scope.parameter.acr_values !== ""){
             redirect_url+="&acr_values="+$scope.parameter.acr_values;
           }
-          // $cookies.put('Authorization', $routeParams.identityId);
-          // $window.location.href = redirect_url;
+          $cookies.put('Authorization', $routeParams.identityId);
+          $window.location.href = redirect_url;
           // Simple GET request example:
-          $http({
-            method: 'POST',
-            url: redirect_url,
-            headers: { 'Authorization' : $routeParams.identityId }
-          }).then(function successCallback(response) {
-            console.log("success");
-              // this callback will be called asynchronously
-              // when the response is available
-            }, function errorCallback(response) {
-              console.log("error");
-              // called asynchronously if an error occurs
-              // or server returns response with an error status.
-            });
+          //
+          // let xhr = new XMLHttpRequest();
+          // xhr.open('GET', redirect_url, true);
+          // xhr.setRequestHeader('Authorization',$routeParams.identityId);
+          // xhr.onreadystatechange = function() {
+          //   if(this.readyState == this.HEADERS_RECEIVED) {
+          //     // console.log(xhr.getResponseHeader("Location"));
+          //     console.log(xhr.getAllResponseHeaders());
+          //     console.log('erasda');
+          //   }
+          // }
+          // xhr.send();
+          //
+          //
+          $.ajax({
+              type: "GET",
+              url: redirect_url,
+              headers: {
+                    'Authorization': $routeParams.identityId
+                },
+              success: function(data, textStatus) {
+                  if (data.redirect) {
+                    console.log(data.redirect);
+                      // data.redirect contains the string URL to redirect to
+                      $window.location.href = data.redirect;
+                  }
+                  else {
+                      // data.form contains the HTML for the replacement form
+                      console.log('error');
+                  }
+              }
+          });
+          // $http({
+          //   method: 'GET',
+          //   url: redirect_url,
+          //   headers: { 'Authorization' : $routeParams.identityId }
+          // }).then(function successCallback(response) {
+          //     console.log("okay");
+          //     //$window.location.href=response;
+          //     // this callback will be called asynchronously
+          //     // when the response is available
+          //   }, function errorCallback(response) {
+          //     console.log(response.headers);
+          //     // called asynchronously if an error occurs
+          //     // or server returns response with an error status.
+          //   });
           return;
       }
 
