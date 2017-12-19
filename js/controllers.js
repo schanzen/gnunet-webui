@@ -77,7 +77,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'Login
       });
     };
     $scope.loginIdentity = function(identity) {
-      Login({ "identity" : identity.id }).$promise.then (function(result) {
+      Login.login({ "identity" : identity.id }).then (function(result) {
         let redirect_url = "#/identities/"+identity.id;
         if($scope.parameter.response_type !== "" && $scope.parameter.response_type !== undefined){
           redirect_url+="?response_type="+$scope.parameter.response_type;
@@ -396,36 +396,36 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies','$htt
           +"&scope="+$scope.parameter.scope
           +"&redirect_uri="+$scope.parameter.redirect_uri;
           //Needs to be changed due to nonce specification
-          if($scope.parameter.nonce !== ""){
-            redirect_url+="&nonce="+($scope.parameter.nonce+1);
+          if($scope.parameter.nonce !== "" && $scope.parameter.nonce !== undefined){
+            redirect_url+="&nonce="+$scope.parameter.nonce;
           }
           //May be unnecessary due to enduser authentication
-          if($scope.parameter.display !== ""){
+          if($scope.parameter.display !== "" && $scope.parameter.display !== undefined){
             redirect_url+="&display="+$scope.parameter.display;
           }
           //May be unnecessary due to enduser authentication
-          if($scope.parameter.prompt !== ""){
+          if($scope.parameter.prompt !== "" && $scope.parameter.prompt !== undefined){
             redirect_url+="&prompt="+$scope.parameter.prompt;
           }
-          if($scope.parameter.max_age !== ""){
+          if($scope.parameter.max_age !== "" && $scope.parameter.max_age !== undefined){
             redirect_url+="&max_age="+$scope.parameter.max_age;
           }
-          if($scope.parameter.ui_locales !== ""){
+          if($scope.parameter.ui_locales !== "" && $scope.parameter.ui_locales !== undefined){
             redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
           }
-          if($scope.parameter.response_mode !== ""){
+          if($scope.parameter.response_mode !== "" && $scope.parameter.response_mode !== undefined){
             redirect_url+="&response_mode="+$scope.parameter.response_mode;
           }
-          if($scope.parameter.id_token_hint !== ""){
+          if($scope.parameter.id_token_hint !== "" && $scope.parameter.id_token_hint !== undefined){
             redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
           }
-          if($scope.parameter.login_hint !== ""){
+          if($scope.parameter.login_hint !== "" && $scope.parameter.login_hint !== undefined){
             redirect_url+="&login_hint="+$scope.parameter.login_hint;
           }
-          if($scope.parameter.acr_values !== ""){
+          if($scope.parameter.acr_values !== "" && $scope.parameter.acr_values !== undefined){
             redirect_url+="&acr_values="+$scope.parameter.acr_values;
           }
-          $cookies.put('Authorization', $routeParams.identityId);
+          $cookies.put('Identity', $routeParams.identityId);
           $window.location.href = redirect_url;
           // Simple GET request example:
           //
@@ -442,24 +442,24 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies','$htt
           // xhr.send();
           //
           //
-          $.ajax({
-              type: "GET",
-              url: redirect_url,
-              headers: {
-                    'Authorization': $routeParams.identityId
-                },
-              success: function(data, textStatus) {
-                  if (data.redirect) {
-                    console.log(data.redirect);
-                      // data.redirect contains the string URL to redirect to
-                      $window.location.href = data.redirect;
-                  }
-                  else {
-                      // data.form contains the HTML for the replacement form
-                      console.log('error');
-                  }
-              }
-          });
+          // $.ajax({
+          //     type: "GET",
+          //     url: redirect_url,
+          //     headers: {
+          //           'Authorization': $routeParams.identityId
+          //       },
+          //     success: function(data, textStatus) {
+          //         if (data.redirect) {
+          //           console.log(data.redirect);
+          //             // data.redirect contains the string URL to redirect to
+          //             $window.location.href = data.redirect;
+          //         }
+          //         else {
+          //             // data.form contains the HTML for the replacement form
+          //             console.log('error');
+          //         }
+          //     }
+          // });
           // $http({
           //   method: 'GET',
           //   url: redirect_url,
