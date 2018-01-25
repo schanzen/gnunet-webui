@@ -82,6 +82,18 @@ input[type="checkbox"]:checked + label span:after {
   box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
 }
 
+.login-container{
+  justify-content: center;
+}
+
+.login-header{
+  text-align: center;
+}
+
+.login-content{
+
+}
+
 .identity {
   list-style: none;
 }
@@ -340,13 +352,13 @@ h1 {
 }
 
 .tag, .button, .button:visited {
-  background: #222 url(overlay.png) repeat-x; 
-  display: inline-block; 
-  padding: 0.5em 1em 0.5em; 
-  color: #fff; 
+  background: #222 url(overlay.png) repeat-x;
+  display: inline-block;
+  padding: 0.5em 1em 0.5em;
+  color: #fff;
   text-decoration: none;
   min-width: 2.5em;
-  text-align: center; 
+  text-align: center;
   border-radius: 1px;
   text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
   //border-bottom: 1px solid rgba(0,0,0,0.25);
@@ -434,16 +446,16 @@ label.selectbutton:before {
   font-size: 11px;
 }
 .tag, .medium.tag, .button, .button:visited, .medium.button, .medium.button:visited                {
-  font-size: 13px; 
-  font-weight: bold; 
-  line-height: 1; 
-  text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
 }
 
-.large.tag, .large.button, .large.button:visited                    { font-size: 14px; 
+.large.tag, .large.button, .large.button:visited                    { font-size: 14px;
 padding: 8px 14px 9px; }
 
-.super.tag, .super.button, .super.button:visited                    { font-size: 34px; 
+.super.tag, .super.button, .super.button:visited                    { font-size: 34px;
 padding: 8px 14px 9px; }
 
 .grey.tag, .grey.button, .magenta.button:visited           { background-color: #555; }
