@@ -19,13 +19,11 @@
   <form novalidate="novalidate" class="form-horizontal">
     <div class="row content">
 
-      <div class="col-md-4 content-column">
+      <div class="col-md-8 content-column">
         <!--Body content-->
         <div class="content">
           <h2><i style="color:#555" class="fa fa-users"/> Available
             Identities </h2>
-          </div>
-          <div>
             <table class="attribute">
               <tbody class="attribute-listing">
                 <tr class="item"  ng-repeat-start="identity in identities |
@@ -49,19 +47,9 @@
               {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
               5,identity.id.length - 1)}}<br/>-->
               <a
-              ng-click="goToIdentity(identity)"
-              ng-show="selectIdentity"
-              class="button grey fa fa-sign-in"
-              style="float:right;"></a>
-              <a ng-click="removeIdentity(identity)"
-              ng-show="!selectIdentity"
-              style="float:right;"
-              class="button orange fa fa-user-times"></a>
-              http://localhost:8000/#/identities
-              <a
               ng-click="loginIdentity(identity)"
               ng-show="!selectIdentity"
-              style="float:right;" class="button grey fa fa-edit"></a>
+              style="float:right;" class="button orange fa fa-user"> Login</a>
             </td>
           </tr>
           <tr ng-show="!$last" ng-repeat-end>
@@ -72,18 +60,10 @@
         </tbody>
       </table>
     </div>
+    <a type="button" class="button grey" target="_blank" href="/index.html#/identities/">
+      <b> Edit Identities</b> <i class="fa fa-arrow-right"></i>
+    </a><br/><br/>
   </div>
 </div>
 </form>
-</div>
-
-<div class="login-container">
-  <div class="login-header content">
-    <h2><i style="color:#555" class="fa fa-users"/> Available
-      Identities
-    </h2>
-  </div>
-  <div>
-    test
-  </div>
 </div>

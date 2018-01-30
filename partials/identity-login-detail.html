@@ -1,0 +1,150 @@
+<div class="container-fluid">
+  <div class="row top">
+    <div class="col-md-12">
+
+      <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
+        <img src="img/gnet.png" style="margin:2px; width:50px;"/>
+        {{identityName}}</h1>
+
+    </div>
+  </div>
+  <div class="row requestinfo" ng-show="selectIdentity">
+    <div><b>{{selectIdentity}}</b> requests an identity with
+      the following information:</div>
+    <ul>
+      <li ng-repeat="requestedInfo in requestedInfos">
+        {{requestedInfo}}
+      </li>
+    </ul>
+  </div>
+
+  <form novalidate="novalidate" class="form-horizontal">
+
+    <div class="row content">
+      <div class="col-md-12 content-column">
+        <div class="content">
+          <!--Body content-->
+          <h2><i style="color:#555" class="fa fa-street-view"/> Identity Attributes</h2>
+          <table class="attribute">
+            <thead>
+              <td>Attribute Name</td>
+              <td>Attribute Value</td>
+            </thead>
+            <tbody
+                 class="attribute-listing">
+              <tr ng-repeat-start="attr in getAttrs()" class="item">
+                <td class="attr-name" style="{{attrs.indexOf(attr.id) == -1 ?
+                'color: #ddd;' : '';}}"><b>{{attr.id}}</b> <i
+                                      ng-show="{{requestedInfos.indexOf(attr.id) != -1}}"
+                                      style="color: #2981e4;">(requested)</i></td>
+                <td>
+                  <i style="{{attrs.indexOf(attr.id) == -1 ? 'color: #ddd;' :
+                  '';}}"><i class="tag grey
+                  small">{{attr.attributes.value}}</i></i>
+                </td>
+                <td style="text-align:right;">
+                  <input ng-show="selectIdentity" id="check{{attr.id}}" checklist-model="attrs"
+                                                                        checklist-value="attr.id" type=checkbox style="display:none;">
+                  <label ng-show="selectIdentity" for="check{{attr.id}}"
+                                                  class="tag fa-share-alt fa {{attrs.indexOf(attr.id)
+                                                  == -1 ? 'white' : 'blue';}}"
+                                                  style="height:2em;width:3em;"/>
+                    <a ng-click="removeAttribute(attr)" style="height:2em;
+                    width:3em;"
+                                                        class="button orange fa fa-trash"></a>
+                </td>
+              </tr>
+              <tr ng-repeat-end>
+                <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+                  <hr >
+                </td>
+              </tr>
+              <tr >
+                <td>
+                  <input type="text" class="new_attribute"
+                                     placeholder="Attribute Name"
+                                     ng-model="new_attribute.data.id">
+                </td>
+                <td>
+                  <input type="text"  class="new_attribute"
+                                      placeholder="Attribute Value"
+                                      ng-model="new_attribute.data.attributes.value">
+                </td>
+                <td style="text-align:right;">
+                  <a ng-click="addAttribute()" style="height:2em;width:3em;"
+                                               class="button grey fa fa-plus"></a>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <div ng-show="selectIdentity">
+            <br/>
+            <!--Body content-->
+            <h2><i style="color:#555" class="fa fa-share-alt"/> Issue Token</h2>
+
+            <i ng-show="notRequestedAttributeShared()"
+               style="color: #D45500;" class="fa fa-warning"> More attributes
+               than requested are shared.</i>
+            <br/>
+            <div>
+              <label>Token Lifetime:</label>
+              <label style="float:right;" class="selectbutton fa">
+                <select
+                                          class="button grey"
+                                          style="min-width: 12em;"
+                                          name="relSelect"
+                                          ng-model="selectedRelExpiration">
+                  <option value="5m">5 Minutes</option>
+                  <option value="1h">1 Hour</option>
+                  <option value="1d">1 Day</option>
+                  <option value="7d">1 Week</option>
+                </select>
+              </label>
+              <br/>
+              <!--<a class="button grey fa fa-share-alt" style="width:100%;"
+              ng-click="acceptRequest()"> Share Information and Login</a>
+              <br/><br/>-->
+              <a class="button orange" style="width:100%;"
+              ng-click="loginOP()"> Authorize OpenID Connect Service</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="content" data-ng-repeat="data in sampleData">
+          </div> -->
+          <div class="content">
+            <h2 ><i style="color:#555" class="fa fa-chain"/> Issued Tickets</h2>
+            <table class="attribute">
+              <thead style="text-align: center;">
+                <td>
+                  Audience
+                </td>
+                <td>
+                  Actions
+                </td>
+              </thead>
+              <tbody style="text-align:
+              center;"
+                     class="attribute-listing">
+                <tr ng-repeat="ticket in tickets.data" class="item">
+                  <td class="attr-name"><a
+                      href="{{ticket.id}}">{{getAudienceNameForKey(ticket.attributes.audience)}}</a></td>
+                  <td style="text-align:right;">
+
+                    <a type="button" class="button grey fa fa-info-circle"
+                                     ng-click="isCollapsed = !isCollapsed"/>
+                      <a class="button orange fa fa-unlink"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+    <hr>
+    <a type="button" class="button grey fa fa-arrow-left"
+                     href="javascript:history.go(-2)"><b> Back to
+                       Identities</b></a><br/><br/>
+  </form>
+</div>
