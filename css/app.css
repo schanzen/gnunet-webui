@@ -187,7 +187,7 @@ ul.attribute, table.attribute {
   list-style: none;
 }
 
-.divthumb {
+/*.divthumb {
   font-size: 1em;
   height: 100%;
   padding: 0;
@@ -211,7 +211,7 @@ ul.attribute, table.attribute {
   margin-top: 1px;
   color: white;
   padding: 3px;
-}
+}*/
 
 /*.divthumb.active:hover input {
 height: 20%;

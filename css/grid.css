@@ -1,0 +1,44 @@
+.header {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas: "header-name header-logo";
+  grid-area: header;
+  align-items: center;
+  color: white;
+  background-color: #555;
+}
+
+.header-name {
+  grid-area: header-name;
+  justify-self: start;
+  color: #FF9900;
+  font-family: Audiowide;
+}
+
+.header-logo {
+  grid-area: header-logo;
+  justify-self: end;
+}
+
+.item {
+  grid-area: main;
+}
+
+.footer {
+  grid-area: footer;
+
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(10px, auto);
+  justify-content: stretch;
+  align-content: stretch;
+  grid-template-areas:
+    "header header header header"
+    "main main main main"
+    "footer footer footer footer";
+}

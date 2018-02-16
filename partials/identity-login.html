@@ -1,16 +1,63 @@
-<div class="container-fluid">
+<div class="grid-container">
+  <div class="header">
+    <h1 class="header-name">
+      re:claimID
+    </h1>
+    <img class="header-logo" src="img/gnet.png" style="margin:2px; width:50px;"/>
+  </div>
+  <div class="requestinfo"
+  ng-show="selectIdentity"><b>{{selectIdentity}}</b> requests
+  an identity.</div>
+  <form novalidate="novalidate">
+    <div class="item">
+      <h2>
+        <i style="color:#555" class="fa fa-users"/>
+        Available Identities
+      </h2>
+      <table class="attribute">
+        <tbody class="attribute-listing">
+          <tr class="item"  ng-repeat-start="identity in identities |
+            filter:searchIdentities | orderBy:'name'">
+            <td class="identity-thumb">
+              <div class="divthumb {{selectIdentity ? 'active' : '';}}">
+                <div style="background-color: {{intToRGB(identity.id)}};" class="thumb icon" >
+                  {{identity.attributes.name[0]}}
+                </div>
+                <div class="thumb fa alt">
+                  {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
+                    5,identity.id.length - 1)}}
+                </div>
+              </div>
+            </td>
+            <td class="identity-info">
+              <h1>{{identity.attributes.name}}</h1>
+              <!--Key:
+              {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
+              5,identity.id.length - 1)}}<br/>-->
+              <a ng-click="loginIdentity(identity)"
+              ng-show="!selectIdentity"
+              style="float:right;" class="button orange fa fa-user"> Login</a>
+            </td>
+          </tr>
+          <tr ng-show="!$last" ng-repeat-end>
+            <td colspan="3" style="padding-top: 0; padding-bottom: 0;">
+              <hr ng-show="!$last">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+  <div class="footer"><h1>Ende</h1></div>
+</div>
+
+<!--<div class="container-fluid">
   <div class="row top">
     <div class="col-md-12">
 
-      <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
+      <h1>
         <img src="img/gnet.png" style="margin:2px; width:50px;"/>
         re:claimID</h1>
-      <!--Search: <input ng-model="query">
-      Sort by:
-      <select ng-model="orderProp">
-        <option value="name">Alphabetical</option>
-        <option value="age">Newest</option>
-      </select>-->
     </div>
   </div>
   <div class="row requestinfo"
@@ -20,7 +67,6 @@
     <div class="row content">
 
       <div class="col-md-8 content-column">
-        <!--Body content-->
         <div class="content">
           <h2><i style="color:#555" class="fa fa-users"/> Available
             Identities </h2>
@@ -43,9 +89,7 @@
               </td>
               <td class="identity-info">
                 <h1>{{identity.attributes.name}}</h1>
-                  <!--Key:
-              {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
-              5,identity.id.length - 1)}}<br/>-->
+                  
               <a
               ng-click="loginIdentity(identity)"
               ng-show="!selectIdentity"
@@ -66,4 +110,4 @@
   </div>
 </div>
 </form>
-</div>
+</div>-->
