@@ -1,0 +1,126 @@
+:root {
+  --darkCol: #737373;
+  --lightCol: #bfbfbf;
+}
+
+body, .view-container, .view-frame {
+  height: 100%;
+  margin: 0px;
+  background-color: #eee;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  grid-template-rows: 70px auto 20px;
+  align-content: stretch;
+  align-items: stretch;
+  grid-template-areas:
+    "stb stb stb stb stb stb"
+    "flt cnt cnt cnt cnt cnt"
+    "flt ftr ftr ftr ftr ftr";
+  height: 100vh;
+}
+
+.grid > .statusbar {
+  grid-area: stb;
+  background-color: var(--darkCol);
+}
+
+.grid > .statusbar > .statusbar-origin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grid > .statusbar > .statusbar-origin > img {
+  margin:2px;
+  height: 50px;
+  width:50px;
+  margin-right: 10px;
+}
+
+.grid > .statusbar > .statusbar-origin > h1 {
+  color: white;
+  font-family: Audiowide;
+  margin-left: 10px;
+}
+
+.grid > .filter {
+  background-color: var(--lightCol);
+  color: white;
+  grid-area: flt;
+}
+
+.grid > .filter input {
+  color: var(--darkCol);
+  border-radius: 5px;
+  border-style: hidden;
+  padding: 5px;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-size: 16px;
+}
+
+.grid > .filter h3 {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.grid > .filter > .create  a {
+
+  background-color: ;
+  text-decoration: none;
+}
+
+.grid > .content {
+  grid-area: cnt;
+  margin: 20px;
+  margin-top: 0px;
+}
+
+.grid > .content > .content-body {
+  display: flex;
+
+}
+
+.grid > .content .identity {
+  background-color: white;
+  margin: 5px;
+  border-radius: 10px;
+  border-style: hidden;
+}
+
+.grid > .content .identity > .icon {
+  height: 100px;
+  width: 200px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  display: flex;
+  align-self: center;
+  font-size: 30px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.grid > .content .identity > .identity-info {
+  text-align: center;
+}
+
+.grid > .footer {
+  grid-area: ftr;
+  background-color: var(--darkCol);
+  color: white;
+  text-align: right;
+}
+
+/*Here goes the fancy stuff:*/
+.grid > .content .identity:after {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: box-shadow 0.5s;
+  -webkit-transition: box-shadow 2s; /* Safari */
+}
+.grid > .content .identity:hover:after {
+  box-shadow: none;
+}

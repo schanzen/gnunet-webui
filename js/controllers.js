@@ -5,8 +5,8 @@
 var identityControllers = angular.module('identityControllers', []);
 
 
-identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
-  function($scope, Identity, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
+identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'Login', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
+  function($scope, Identity, Login, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
     Identity.query(function(data) {
       $scope.identities = data.data;
     });
@@ -19,6 +19,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
     $scope.new_identity.data.type = "ego";
     $scope.new_identity.data.attributes.name = "";
     $scope.id_request = $location.search().r;
+    $scope.parameter = $location.search();
     if (undefined !== $scope.id_request)
     {
       var params = $scope.id_request.split("?")[1].split("&");
@@ -26,6 +27,7 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
       for (i = 0; i < params.length; i++)
       {
         var keyval = params[i].split("=");
+
         if ("client_id" === keyval[0]) {
           $scope.client_id = keyval[1];
           $scope.selectIdentity = keyval[1];
@@ -74,9 +76,172 @@ identityControllers.controller('IdentityListCtrl', ['$scope', 'Identity', 'color
         });
       });
     };
+    $scope.loginIdentity = function(identity) {
+      Login.login({ "identity" : identity.id }).then (function(result) {
+        let redirect_url = "#/identities/"+identity.id;
+        if($scope.parameter.response_type !== "" && $scope.parameter.response_type !== undefined){
+          redirect_url+="?response_type="+$scope.parameter.response_type;
+        }
+        if($scope.parameter.client_id !== "" && $scope.parameter.client_id !== undefined){
+          redirect_url+="&client_id="+$scope.parameter.client_id;
+        }
+        if($scope.parameter.scope !== "" && $scope.parameter.scope !== undefined){
+          redirect_url+="&scope="+$scope.parameter.scope;
+        }
+        if($scope.parameter.redirect_uri !== "" && $scope.parameter.redirect_uri !== undefined){
+          redirect_url+="&redirect_uri="+$scope.parameter.redirect_uri;
+        }
+        if($scope.parameter.state !== "" && $scope.parameter.state !== undefined){
+          redirect_url+="&state="+($scope.parameter.state);
+        }
+        if($scope.parameter.nonce !== "" && $scope.parameter.nonce !== undefined){
+          redirect_url+="&nonce="+($scope.parameter.nonce);
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.display !== "" && $scope.parameter.display !== undefined){
+          redirect_url+="&display="+$scope.parameter.display;
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.prompt !== "" && $scope.parameter.prompt !== undefined){
+          redirect_url+="&prompt="+$scope.parameter.prompt;
+        }
+        if($scope.parameter.max_age !== "" && $scope.parameter.max_age !== undefined){
+          redirect_url+="&max_age="+$scope.parameter.max_age;
+        }
+        if($scope.parameter.ui_locales !== "" && $scope.parameter.ui_locales !== undefined){
+          redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
+        }
+        if($scope.parameter.response_mode !== "" && $scope.parameter.response_mode !== undefined){
+          redirect_url+="&response_mode="+$scope.parameter.response_mode;
+        }
+        if($scope.parameter.id_token_hint !== "" && $scope.parameter.id_token_hint !== undefined){
+          redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
+        }
+        if($scope.parameter.login_hint !== "" && $scope.parameter.login_hint !== undefined){
+          redirect_url+="&login_hint="+$scope.parameter.login_hint;
+        }
+        if($scope.parameter.acr_values !== "" && $scope.parameter.acr_values !== undefined){
+          redirect_url+="&acr_values="+$scope.parameter.acr_values;
+        }
+        $window.location.href=redirect_url;
+      });
+    };
   }]);
-identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$routeParams', 'Identity', 'Attributes', 'Tickets', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Names',
-  function($scope, storage, $routeParams, Identity, Attributes, Tickets, $location, IdTokenIssuer, $window, colorService, ReverseNames, Names) {
+
+  identityControllers.controller('LoginListCtrl', ['$scope', 'Identity', 'Login', 'colorService', 'jwtService', '$location', '$window', 'Tickets', 'ReverseNames',
+  function($scope, Identity, Login, colorService, jwtService, $location, $window, Tickets, ReverseNames) {
+    Identity.query(function(data) {
+      $scope.identities = data.data;
+    });
+    $scope.orderProp = 'age';
+    $scope.intToRGB = function(i) { return colorService.intToRGB(i); };
+    $scope.new_identity = new Identity();
+    $scope.new_identity.data = new Object();
+    $scope.new_identity.data.id = "";
+    $scope.new_identity.data.attributes = new Object();
+    $scope.new_identity.data.type = "ego";
+    $scope.new_identity.data.attributes.name = "";
+    $scope.id_request = $location.search().r;
+    $scope.parameter = $location.search();
+    if (undefined !== $scope.id_request)
+    {
+      var params = $scope.id_request.split("?")[1].split("&");
+      var i;
+      for (i = 0; i < params.length; i++)
+      {
+        var keyval = params[i].split("=");
+
+        if ("client_id" === keyval[0]) {
+          $scope.client_id = keyval[1];
+          $scope.selectIdentity = keyval[1];
+        } else if ("requested_attrs" === keyval[0]) {
+          $scope.requested_attrs = keyval[1];
+        } else if ("requested_verified_attrs" === keyval[0]) {
+          $scope.requested_verified_attrs = keyval[1];
+        } else if ("redirect_uri" === keyval[0]) {
+          $scope.redirect_uri = keyval[1];
+        } else if ("issue_type" === keyval[0]) {
+          $scope.issue_type = keyval[1];
+        } else if ("nonce" === keyval[0]) {
+          $scope.nonce = keyval[1];
+        }
+        ReverseNames.query({zkey:$scope.client_id}).$promise.then (function(data) {
+          if (data.data.length === 1) {
+            $scope.selectIdentity = data.data[0].attributes.name;
+          }
+        });
+      }
+    }
+    $scope.addIdentity = function() {
+
+      Identity.save($scope.new_identity).$promise.then (function(result) {
+        Identity.query(function(data) {
+          $scope.identities = data.data;
+          $scope.new_identity.data.attributes.name = "";
+        });
+      });
+    };
+    $scope.removeIdentity = function(identity) {
+      Identity.remove({ identityId: identity.id }).$promise.then (function(result) {
+        Identity.query(function(data) {
+          $scope.identities = data.data;
+        });
+      });
+    };
+    $scope.loginIdentity = function(identity) {
+      Login.login({ "identity" : identity.id }).then (function(result) {
+        let redirect_url = "#/login/"+identity.id;
+        if($scope.parameter.response_type !== "" && $scope.parameter.response_type !== undefined){
+          redirect_url+="?response_type="+$scope.parameter.response_type;
+        }
+        if($scope.parameter.client_id !== "" && $scope.parameter.client_id !== undefined){
+          redirect_url+="&client_id="+$scope.parameter.client_id;
+        }
+        if($scope.parameter.scope !== "" && $scope.parameter.scope !== undefined){
+          redirect_url+="&scope="+$scope.parameter.scope;
+        }
+        if($scope.parameter.redirect_uri !== "" && $scope.parameter.redirect_uri !== undefined){
+          redirect_url+="&redirect_uri="+$scope.parameter.redirect_uri;
+        }
+        if($scope.parameter.state !== "" && $scope.parameter.state !== undefined){
+          redirect_url+="&state="+($scope.parameter.state);
+        }
+        if($scope.parameter.nonce !== "" && $scope.parameter.nonce !== undefined){
+          redirect_url+="&nonce="+($scope.parameter.nonce);
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.display !== "" && $scope.parameter.display !== undefined){
+          redirect_url+="&display="+$scope.parameter.display;
+        }
+        //May be unnecessary due to enduser authentication
+        if($scope.parameter.prompt !== "" && $scope.parameter.prompt !== undefined){
+          redirect_url+="&prompt="+$scope.parameter.prompt;
+        }
+        if($scope.parameter.max_age !== "" && $scope.parameter.max_age !== undefined){
+          redirect_url+="&max_age="+$scope.parameter.max_age;
+        }
+        if($scope.parameter.ui_locales !== "" && $scope.parameter.ui_locales !== undefined){
+          redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
+        }
+        if($scope.parameter.response_mode !== "" && $scope.parameter.response_mode !== undefined){
+          redirect_url+="&response_mode="+$scope.parameter.response_mode;
+        }
+        if($scope.parameter.id_token_hint !== "" && $scope.parameter.id_token_hint !== undefined){
+          redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
+        }
+        if($scope.parameter.login_hint !== "" && $scope.parameter.login_hint !== undefined){
+          redirect_url+="&login_hint="+$scope.parameter.login_hint;
+        }
+        if($scope.parameter.acr_values !== "" && $scope.parameter.acr_values !== undefined){
+          redirect_url+="&acr_values="+$scope.parameter.acr_values;
+        }
+        $window.location.assign(redirect_url);
+      });
+    };
+  }]);
+
+identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies','$http', 'storage','$routeParams', 'Identity', 'Attributes', 'Tickets', '$location', 'IdTokenIssuer', '$window', 'colorService', 'ReverseNames', 'Names',
+  function($scope, $cookies, $http, storage, $routeParams, Identity, Attributes, Tickets, $location, IdTokenIssuer, $window, colorService, ReverseNames, Names) {
     $scope.selectedRelExpiration = "1d";
 
 
@@ -94,6 +259,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       $scope.requestedInfos = [];
       $scope.client_id = $location.search().client_id;
       $scope.nonce = $location.search().nonce;
+      $scope.parameter = $location.search();
       $scope.requested_attrs = $location.search().requested_attrs;
       storage.clearAll();
       if (undefined !== $scope.requested_attrs) {
@@ -108,13 +274,15 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
       }
       $scope.updateAttrs = function (attributes) {
         $scope.attrs = [];
-        if (attributes.data instanceof Array) {
-          for (var i = 0; i < attributes.data.length; i++)
-          {
-            $scope.attrs.push(attributes.data[i].id);
+        if(attributes.data !==  null){
+          if (attributes.data instanceof Array) {
+            for (var i = 0; i < attributes.data.length; i++)
+            {
+              $scope.attrs.push(attributes.data[i].id);
+            }
+          } else {
+            $scope.attrs.push(attributes.data.id);
           }
-        } else {
-          $scope.attrs.push(attributes.data.id);
         }
         $scope.missingAttrs = [];
         for (var i = 0; i < $scope.requestedInfos.length; i++) {
@@ -127,8 +295,10 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
         $scope.updateAttrs(attributes);
       });
       $scope.names = Names.get({identityName: $scope.identity.attributes.name}, function(names) {
-        for (var i = 0; i < names.data.length; i++) {
-          $scope.audienceNames[names.data[i].attributes.record[0].value] = names.data[i].id;
+        if(names.data !== null){
+          for (var i = 0; i < names.data.length; i++) {
+            $scope.audienceNames[names.data[i].attributes.record[0].value] = names.data[i].id;
+          }
         }
       });
       $scope.getAttrs = function () {
@@ -333,6 +503,51 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', 'storage','$rout
               "#token="+encodeURIComponent(tokenData.data[0].attributes.token)
           }
         });
+      }
+
+      $scope.loginOP = function() {
+        let redirect_url = "http://localhost:7776/idp/authorize"
+          +"?response_type="+$scope.parameter.response_type
+          +"&client_id="+$scope.parameter.client_id
+          +"&scope="+$scope.parameter.scope
+          +"&redirect_uri="+$scope.parameter.redirect_uri;
+          if($scope.parameter.state !== "" && $scope.parameter.state !== undefined){
+            redirect_url+="&state="+$scope.parameter.state;
+          }
+          //Needs to be changed due to nonce specification
+          if($scope.parameter.nonce !== "" && $scope.parameter.nonce !== undefined){
+            redirect_url+="&nonce="+$scope.parameter.nonce;
+          }
+          //May be unnecessary due to enduser authentication
+          if($scope.parameter.display !== "" && $scope.parameter.display !== undefined){
+            redirect_url+="&display="+$scope.parameter.display;
+          }
+          //May be unnecessary due to enduser authentication
+          if($scope.parameter.prompt !== "" && $scope.parameter.prompt !== undefined){
+            redirect_url+="&prompt="+$scope.parameter.prompt;
+          }
+          if($scope.parameter.max_age !== "" && $scope.parameter.max_age !== undefined){
+            redirect_url+="&max_age="+$scope.parameter.max_age;
+          }
+          if($scope.parameter.ui_locales !== "" && $scope.parameter.ui_locales !== undefined){
+            redirect_url+="&ui_locales="+$scope.parameter.ui_locales;
+          }
+          if($scope.parameter.response_mode !== "" && $scope.parameter.response_mode !== undefined){
+            redirect_url+="&response_mode="+$scope.parameter.response_mode;
+          }
+          if($scope.parameter.id_token_hint !== "" && $scope.parameter.id_token_hint !== undefined){
+            redirect_url+="&id_token_hint="+$scope.parameter.id_token_hint;
+          }
+          if($scope.parameter.login_hint !== "" && $scope.parameter.login_hint !== undefined){
+            redirect_url+="&login_hint="+$scope.parameter.login_hint;
+          }
+          if($scope.parameter.acr_values !== "" && $scope.parameter.acr_values !== undefined){
+            redirect_url+="&acr_values="+$scope.parameter.acr_values;
+          }
+          //TODO delete
+          $cookies.put('Identity', $routeParams.identityId);
+          $window.location.href = redirect_url;
+          return;
       }
 
     });

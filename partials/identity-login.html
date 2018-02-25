@@ -1,0 +1,50 @@
+<div class="grid">
+
+  <div class="statusbar">
+    <div class="statusbar-origin">
+      <h1> re:claimID </h1>
+      <img src="img/gnet.png"/>
+    </div>
+    <div class="statusbar-links">
+    </div>
+  </div>
+
+  <div class="filter">
+    <div class="search">
+      <h3> <i class="fa fa-search"/> Search</h3>
+      <input type="text" ng-model="searchIdentities" placeholder="by identity">
+    </div>
+    <div class="create">
+      <h3> <i class="fa fa-plus"/> Create new identity</h3>
+      <input type="text" ng-keypress="($event.which === 13)?addIdentity():0"
+      class="new_identity" placeholder="Enter identity name"
+      ng-model="new_identity.data.attributes.name">
+      <a ng-click="addIdentity()" style="height:2em;" class="fa fa-plus"></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h3 class="content-head"><i class="fa fa-users"/>Available Identities</h3>
+    <div class="content-body">
+      <div class="identity" ng-click="loginIdentity(identity)"
+        ng-show="!selectIdentity" ng-repeat="identity in identities |
+        filter:searchIdentities | orderBy:'name'">
+        <div style="background-color: {{intToRGB(identity.id)}};" class="icon" >
+          {{identity.attributes.name[0].toUpperCase()}}
+        </div>
+        <div class="identity-info">
+          <div>
+            <h1>{{identity.attributes.name}}</h1>
+            <p>
+              {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
+              5,identity.id.length - 1)}}
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">CopyRight</div>
+</div>

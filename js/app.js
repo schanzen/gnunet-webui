@@ -27,6 +27,14 @@ identityApp.config(['$routeProvider',
         templateUrl: 'partials/identity-detail.html',
         controller: 'IdentityDetailCtrl'
       }).
+      when('/login', {
+        templateUrl: 'partials/identity-login.html',
+        controller: 'LoginListCtrl'
+      }).
+      when('/login/:identityId', {
+        templateUrl: 'partials/identity-login-detail.html',
+        controller: 'IdentityDetailCtrl'
+      }).
       otherwise({
         redirectTo: '/identities'
       });

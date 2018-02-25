@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row top">
     <div class="col-md-12">
-      
+
       <h1><!--<img src="img/sw_fhg.png" style="margin:2px;"/>-->
-        <img src="img/gnet.png" style="margin:2px; width:50px;"/>  
+        <img src="img/gnet.png" style="margin:2px; width:50px;"/>
         re:claimID</h1>
       <!--Search: <input ng-model="query">
       Sort by:
@@ -24,7 +24,7 @@
           <input type="text" ng-model="searchIdentities"
           class="new_identity" placeholder="By identity name"/><span class="tag
           grey fa
-          fa-search"/> 
+          fa-search"/>
         </div>
         <div class="content">
           <h2><i style="color:#555" class="fa fa-user-plus"/> Create a new identity</h2>
@@ -35,7 +35,7 @@
           <a ng-click="addIdentity()" style="height:2em;"
           class="button grey fa fa-plus"></a>
         </div>
-        
+
       </div>
 
       <div class="col-md-8 content-column">
@@ -50,10 +50,10 @@
                 <td class="identity-thumb">
                   <div class="divthumb {{selectIdentity ? 'active' : '';}}">
                     <div
-                    style="background-color: {{intToRGB(identity.id)}};" 
+                    style="background-color: {{intToRGB(identity.id)}};"
                     class="thumb icon" >
                     {{identity.attributes.name[0]}} </div>
-                    <div 
+                    <div
                     class="thumb fa alt">
                     {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
                     5,identity.id.length - 1)}}
@@ -65,7 +65,7 @@
                   <!--Key:
               {{identity.id.substring(0,4)}}...{{identity.id.substring(identity.id.length -
               5,identity.id.length - 1)}}<br/>-->
-              <a 
+              <a
               ng-click="goToIdentity(identity)"
               ng-show="selectIdentity"
               class="button grey fa fa-sign-in"
@@ -74,9 +74,11 @@
               ng-show="!selectIdentity"
               style="float:right;"
               class="button orange fa fa-user-times"></a>
-              <a href="#/identities/{{identity.id}}"
+              http://localhost:8000/#/identities
+              <a
+              ng-click="loginIdentity(identity)"
               ng-show="!selectIdentity"
-              style="float:right;" class="button grey fa fa-edit"></a> 
+              style="float:right;" class="button grey fa fa-edit"></a>
             </td>
           </tr>
           <tr ng-show="!$last" ng-repeat-end>

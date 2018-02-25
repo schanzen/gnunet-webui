@@ -13,6 +13,17 @@ identityServices.factory('Identity', ['$resource',
   }
 ]);
 
+identityServices.factory('Login', ['$http',
+  function($http){
+    return {
+      login: function(login_data){
+        return $http.post('http://localhost:7776/idp/login',login_data);
+      }
+    };
+
+  }
+]);
+
 identityServices.factory('Attributes', ['$resource',
   function($resource){
     return $resource('http://localhost:7776/idp/attributes/:identityName', {}, {
@@ -87,7 +98,7 @@ identityServices.factory('colorService', function(){
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     return hash;
-  }; 
+  };
   return {
     intToRGB: function(i) {
       i = hashCode(i);
