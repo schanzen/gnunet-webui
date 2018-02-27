@@ -17,7 +17,7 @@ identityServices.factory('Login', ['$http',
   function($http){
     return {
       login: function(login_data){
-        return $http.post('http://localhost:7776/idp/login',login_data);
+        return $http.post('http://localhost:7776/idp/login',login_data, { withCredentials: true });
       }
     };
 
