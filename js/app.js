@@ -28,7 +28,7 @@ identityApp.config(['$routeProvider',
         controller: 'IdentityDetailCtrl'
       }).
       when('/login', {
-        templateUrl: 'partials/identity-login.html',
+        templateUrl: 'partials/identity-list.html',
         controller: 'LoginListCtrl'
       }).
       when('/login/:identityId', {

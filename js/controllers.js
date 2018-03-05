@@ -507,7 +507,7 @@ identityControllers.controller('IdentityDetailCtrl', ['$scope', '$cookies', 'Log
 
     $scope.loginOP = function() {
       Login.login({ "identity" : $scope.identity.id }).then (function(result) {
-      let redirect_url = "https://identity.gnu/idp/authorize"
+      let redirect_url = "https://reclaim.id/idp/authorize"
         +"?response_type="+$scope.parameter.response_type
         +"&client_id="+$scope.parameter.client_id
         +"&scope="+$scope.parameter.scope

@@ -6,7 +6,7 @@ var identityServices = angular.module('identityServices', ['ngResource']);
 
 identityServices.factory('Identity', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/identity/:identityId', { identityId : '@id'}, {
+    return $resource('https://reclaim.id/identity/:identityId', { identityId : '@id'}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -17,7 +17,7 @@ identityServices.factory('Login', ['$http',
   function($http){
     return {
       login: function(login_data){
-        return $http.post('https://identity.gnu/idp/login',login_data, { withCredentials: true });
+        return $http.post('https://reclaim.id/idp/login',login_data, { withCredentials: true });
       }
     };
 
@@ -26,7 +26,7 @@ identityServices.factory('Login', ['$http',
 
 identityServices.factory('Attributes', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/idp/attributes/:identityName', {}, {
+    return $resource('https://reclaim.id/idp/attributes/:identityName', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -35,7 +35,7 @@ identityServices.factory('Attributes', ['$resource',
 
 identityServices.factory('Credentials', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/names/:attrName?ego=:identityName&record_type=CRED', {}, {
+    return $resource('https://reclaim.id/names/:attrName?ego=:identityName&record_type=CRED', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -44,7 +44,7 @@ identityServices.factory('Credentials', ['$resource',
 
 identityServices.factory('Names', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/names/:attrName?ego=:identityName&record_type=PKEY', {}, {
+    return $resource('https://reclaim.id/names/:attrName?ego=:identityName&record_type=PKEY', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -54,13 +54,13 @@ identityServices.factory('Names', ['$resource',
 
 identityServices.factory('SaveCredentials', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/names/');
+    return $resource('https://reclaim.id/names/');
   }
 ]);
 
 identityServices.factory('ReverseNames', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/names/zkey?zkey=:zkey', {}, {
+    return $resource('https://reclaim.id/names/zkey?zkey=:zkey', {}, {
       query: {method:'GET', params:{}, isArray:false},
     });
   }
@@ -68,7 +68,7 @@ identityServices.factory('ReverseNames', ['$resource',
 
 identityServices.factory('IdTokenIssuer', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
+    return $resource('https://reclaim.id/idp/issue?issuer=:issuer&audience=:audience&requested_attrs=:attributes&expiration=:expiration&nonce=:nonce&requested_verified_attrs=:verified_attributes', {}, {
       issue: {method:'GET', params:{}, isArray:false},
     });
   }
@@ -76,7 +76,7 @@ identityServices.factory('IdTokenIssuer', ['$resource',
 
 identityServices.factory('Revocation', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/idp/revoke', {}, {
+    return $resource('https://reclaim.id/idp/revoke', {}, {
       revoke: {method: 'POST', params:{}, isArray:false}
     });
   }
@@ -84,7 +84,7 @@ identityServices.factory('Revocation', ['$resource',
 
 identityServices.factory('Tickets', ['$resource',
   function($resource){
-    return $resource('https://identity.gnu/idp/tickets/:identityName', {}, {
+    return $resource('https://reclaim.id/idp/tickets/:identityName', {}, {
       query: {method:'GET', params:{}, isArray:false},
       remove: {method:'DELETE', params:{}, isArray:false}
     });
@@ -131,7 +131,7 @@ identityServices.factory('jwtService', function(){
       var sHeader = JSON.stringify(oHeader);
       var sPayload = JSON.stringify(oPayload);
       // Remove padding equal characters
-      var encodedSource = identity.gnuid_token.replace(/=+$/, '');
+      var encodedSource = reclaim.idid_token.replace(/=+$/, '');
 
       // Replace characters according to base64url specifications
       //encodedSource = encodedSource.replace(/\+/g, '-');
