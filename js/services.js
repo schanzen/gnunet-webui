@@ -17,7 +17,7 @@ identityServices.factory('Login', ['$http',
   function($http){
     return {
       login: function(login_data){
-        return $http.post('https://reclaim.id/idp/login',login_data, { withCredentials: true });
+        return $http.post('https://reclaim.id/openid/login',login_data, { withCredentials: true });
       }
     };
 
